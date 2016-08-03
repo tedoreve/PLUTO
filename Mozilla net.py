@@ -1,22 +1,37 @@
+
 import urllib
+import http.cookiejar  
 import re
 from bs4 import BeautifulSoup as bs
-import codecs
 import gzip
+import codecs
 
 #======================读取网页=================================================
+def getLoginPage(url,posturl,postdata):
+    cj = http.cookiejar.CookieJar()
+    cookie_support = urllib.request.HTTPCookieProcessor(cj)  
+    headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'}
+    opener = urllib.request.build_opener(cookie_support, urllib.request.HTTPHandler)     
+    urllib.request.install_opener(opener) 
+
+    h = urllib.request.urlopen(url)
+    
+    postdata = urllib.parse.urlencode(postdata).encode('utf-8') 
+    
+    request = urllib.request.Request(posturl, postdata, headers)  
+    page = urllib.request.urlopen(request)  
+    return page.read()
+         
 def getPage(url):
     headers = ('User-Agent','Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
     opener = urllib.request.build_opener()
     opener.addheaders = [headers]
     page = opener.open(url)
     return page.read()
-#======================无格式输出===============================================
-#print(html)
 #======================有格式输出===============================================
-#h=getPage('http://www.drao.nrc.ca/')
-#h = bs(h, 'html.parser')
-#print(h.prettify())
+def getPretty(html):
+    h = bs(html, 'html.parser')
+    return h.prettify()
 #=======================下载图片================================================
 def getImg(html):
     reg = r'src="(.+?\.jpg)" pic_ext'
@@ -58,30 +73,40 @@ def getBili(html):
     html=gzip.decompress(html).decode('utf-8')
     imglist = re.findall(imgre,html)
     return imglist
-#==============================================================================
-#========================主程序================================================
-#h=getPage("http://bt.neu6.edu.cn/")
-#result=getLink(h)
-n=100
-result=[]
-for i in range(n):
-    try:
-        h=getPage("http://www.bilibili.com/video/av1"+str(i))
-        result=result+getBili(h)
-        if i%2==1:
-            print(int((i+1)/2)*'#',int((i+1)/n*100),'%')
-        if i%2==0:
-            print(int(i/2)*'#',int((i+1)/n*100),'%')
-    except:
-        if i%2==1:
-            print(int((i+1)/2)*'#',int((i+1)/n*100),'%')
-        if i%2==0:
-            print(int(i/2)*'#',int((i+1)/n*100),'%')
 #========================保存网页(不完善)=======================================
-#h=h.decode('utf-8')
-#file = codecs.open('py.txt', 'w','utf-8')
-#file.write(h)
-#file.close()
+def save(html):
+    #html = html.decode('gbk')
+    file = codecs.open('py.txt', 'w','utf-8')
+    file.write(html)
+    file.close()
+    return 'OK'
+#========================主程序================================================
+#post = {'pageinfo': "userinfo",
+#        'themeinfo': "coremail",
+#        'userName': "zmf@nao.cas.cn",
+#        'password': "19910805.",
+#        'secureLogon': "yes",
+#        'rememberUserName':"yes"    
+#        }
+#h = getLoginPage("https://mail.cstnet.cn/",'https://passport.escience.cn/oauth2/authorize?client_id=10000&redirect_uri=https%3A%2F%2Fmail.cstnet.cn%2Fcoremail%2Fcmcu_addon%2Fcoremail_umt_token.jsp&response_type=code&theme=coremail',post)
+h = getPage('http://210.77.16.21')
+result = getPretty(h)
+save(result)
+#n=100
+#result=[]
+#for i in range(n):
+#    try:
+#        h=getPage("http://www.bilibili.com/video/av1"+str(i))
+#        result=result+getBili(h)
+#        if i%2==1:
+#            print(int((i+1)/2)*'#',int((i+1)/n*100),'%')
+#        if i%2==0:
+#            print(int(i/2)*'#',int((i+1)/n*100),'%')
+#    except:
+#        if i%2==1:
+#            print(int((i+1)/2)*'#',int((i+1)/n*100),'%')
+#        if i%2==0:
+#            print(int(i/2)*'#',int((i+1)/n*100),'%')
 #===========================测试链接============================================
 #domain=[
 #'baidu.com',\
