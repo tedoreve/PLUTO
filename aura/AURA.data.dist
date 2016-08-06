@@ -1,0 +1,39 @@
+!############################################################################
+!# Contains Namelist Information
+!############################################################################
+
+!### Declares which namelist ###
+&Information
+
+!### Define Parameters ###
+ncrbins	= 300,	!Integer which defines the number of CR bins.
+nphbins	= 140,	!Integer which defines the number of bins for the ambient photon field.
+verbose = .TRUE., !Flag which sets the verbosity.
+
+!### IO Parameters ###
+oroot 	   = 'STest',                      ! file name root for output dump files (5 characters long)
+odump_path = 'STest',                      ! directory from work directory to write files
+
+!### Ends the Namelist ###
+/
+
+!----------------------------------------------------------------------------
+
+&Emission
+
+!### Define Parameters ###
+nphbins = 300,	!Integer which defines the number of Emission bins.  Bins are evenly logarithmically spaced in the defined range.
+nulo    = 1d0,	!Double which defines the lower frequency bound for the emission spectrum in Hz
+nuhi    = 1d30, !Double which defines the upper frequency bound for the emission spectrum in Hz
+ncrbins = 300,  !Integer which deinfes the number of Secondary CR bins. Bins are evenly logarithmically spaced in the defined range.
+elo    = 1d-9,	!Double which defines the lower energy bound for the Secondary spectrum in ergs
+ehi    = 1d3,  !Double which defines the upper energy bound for the Secondary CR spectrum in ergs
+
+!### Which Emissions are on ###
+synchrotron    = .TRUE.,	!Logical Flag which turns on Synchrotron calculations.
+ic	       = .TRUE.,	!Logical Flag which turns on IC calculations.
+bremsstrahlung = .TRUE., 	!Logical Flag which turns on Bremsstrahlung calculations.
+pp	       = .FALSE.,	!Logical Flag which turns on Proton-Proton interactions.
+
+!### Ends the Namelist ###
+/
