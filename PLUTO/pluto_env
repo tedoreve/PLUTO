@@ -5,5 +5,5 @@
 5.GUIpython: Need tk (sudo apt-get install tk-dev)
 	     Need matplotlib (need freetype(sudo apt-get install libfreetype6-dev libxft-dev),png(sudo apt-get install libpng-dev)) 
              Need scipy (need las pack fortran：sudo apt-get install libblas-dev liblapack-dev gfortran)
-6.In BashOnWindows GUI need Xming: DISPLAY=:0 GUI_pyPLUTO.py。(DISPLAY=:0 后可以接任何可视化的东西)
+6.In BashOnWindows GUI need Xming: DISPLAY=:0 GUI_pyPLUTO.py。(DISPLAY=:0 any GUI) 
             
