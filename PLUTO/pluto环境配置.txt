@@ -1,9 +1,0 @@
-1.本身解压要按顺序gunzip pluto-xx.tar.gz ，tar xvf pluto-xx.tar 
-2.先配置definition.h pluto.ini
-3.export PLUTO_DIR= ...  python ...
-4.本身需要gcc
-5.GUIpython 需要tk（sudo apt-get install tk-dev）
-	    需要matplotlib （需要freetype（sudo apt-get install libfreetype6-dev libxft-dev），png（sudo apt-get install libpng-dev）） 
-            需要scipy （需要las pack fortran：sudo apt-get install libblas-dev liblapack-dev gfortran）
-6.在windows可视化需要Xming，DISPLAY=:0 GUI_pyPLUTO.py 即可。（DISPLAY=:0 后可以接任何可视化的东西）
-            

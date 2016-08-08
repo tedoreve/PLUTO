@@ -1,0 +1,9 @@
+1.In the sequence: gunzip pluto-xx.tar.gz £¬tar xvf pluto-xx.tar 
+2.Config : definition.h pluto.ini
+3.In .basrc: export PLUTO_DIR= ...  . Then python ...
+4.Need gcc
+5.GUIpython: Need tk (sudo apt-get install tk-dev)
+	     Need matplotlib (need freetype(sudo apt-get install libfreetype6-dev libxft-dev),png(sudo apt-get install libpng-dev)) 
+             Need scipy (need las pack fortran£ºsudo apt-get install libblas-dev liblapack-dev gfortran)
+6.In BashOnWindows GUI need Xming: DISPLAY=:0 GUI_pyPLUTO.py¡£(DISPLAY=:0 any GUI) 
+            
