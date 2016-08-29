@@ -38,7 +38,6 @@
 #define  Temp                    12
 #define  t0                      13
 
-
 /* [Beg] user-defined constants (do not change this line) */
 
 #define  UNIT_DENSITY            CONST_mp
@@ -48,7 +47,7 @@
 
 /* [End] user-defined constants (do not change this line) */
 
-/* -- supplementary constants (user editable) -- */
+/* -- supplementary constants (user editable) -- */ 
 
 #define  INITIAL_SMOOTHING         NO
 #define  WARNING_MESSAGES          YES
