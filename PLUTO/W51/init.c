@@ -146,9 +146,11 @@ void Init (double *us, double x1, double x2, double x3)
   #if ADD_TURBULENCE == YES
   if (first_call){
     int k, input_var[200];
-
+    for (k = 0; k< 200; k++) input_var[k] = -1;
     input_var[0] = RHO;
-    input_var[1] = -1;
+    input_var[1] = BX1;
+    input_var[2] = BX2;
+    input_var[3] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;
@@ -181,10 +183,9 @@ void Init (double *us, double x1, double x2, double x3)
   phi   =   g_inputParam[PHI]*CONST_PI/180.0;
   B0    = g_inputParam[BMAG];
 
-  us[BX1] = B0*sin(theta)*cos(phi);
-  us[BX2] = B0*sin(theta)*sin(phi);
-  us[BX3] = B0*cos(theta);
-
+  //us[BX1] = B0*sin(theta)*cos(phi);
+  //us[BX2] = B0*sin(theta)*sin(phi);
+  us[BX3] = 0.0;
 
   #if GEOMETRY == CARTESIAN
    us[AX1] = 0.0;

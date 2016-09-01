@@ -58,5 +58,5 @@
 #define  LIMITER                   VANLEER_LIM
 #define  CT_EMF_AVERAGE            ARITHMETIC
 #define  CT_EN_CORRECTION          YES
-#define  ASSIGN_VECTOR_POTENTIAL   YES
+#define  ASSIGN_VECTOR_POTENTIAL   NO
 #define  UPDATE_VECTOR_POTENTIAL   NO
