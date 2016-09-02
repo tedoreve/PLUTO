@@ -33,21 +33,21 @@ pcdata=np.flipud(pcdata)
 #b=np.fromfile("rho0.dbl",dtype=np.float)
 #np.savetxt('xx.txt',b)
 width=162
-ra=30
+ra=37
 rho=np.reshape(pcdata,width**2,1)*45  #13CO转12CO
 
-x1=np.zeros([width,width])
-x2=np.zeros([width,width])
+x=np.zeros([width,width])
 for i in range(width):
     for j in range(width):
         for k in range(width+width):
             if i+j == k:
-                x1[i,j] = k/100
-                x2[i,j] = k/100
+                x[i,j] = k/1000
+            
 #plt.imshow(x2)
 #plt.show()
-x1=np.rot90(x1,1)
-x2=np.rot90(x2,1)
+
+x1=np.rot90(x,1)+0.01
+x2=np.rot90(x,1)+0.01
 bx1=np.reshape(x1,width**2,1)  #13CO转12CO
 bx2=np.reshape(x2,width**2,1) 
 total=np.concatenate((rho,bx1,bx2))

@@ -110,7 +110,7 @@ void Init (double *us, double x1, double x2, double x3)
  *********************************************************************** */
 {
   static int first_call = 1;
-  double r, theta, phi, B0, E_ej, M_ej, R_ej, n_h, rho_0, eta, s, n, n_ISM, r_c, rho_c, T, time0, g_gamma;
+  double r, theta, phi, B0, E_ej, M_ej, R_ej, n_h, rho_0, eta, s, n, n_ISM, r_c, rho_c, T, time0, g_gamma, v0;
   E_ej    = g_inputParam[E_EJ];         //爆发能量
   M_ej    = g_inputParam[M_EJ];         //爆发质量
   R_ej    = g_inputParam[R_EJ];         //爆发半径
@@ -126,6 +126,8 @@ void Init (double *us, double x1, double x2, double x3)
 
   r_c     = R_ej*pow(1.0-eta*M_ej*(3.0-n)/(4.0*CONST_PI*rho_0*pow(R_ej,3.0)),1.0/(3.0-n)); //激波均匀介质区半径
   rho_c   = (1-eta)*M_ej/(4/3*CONST_PI*pow(r_c,3)); //激波后均匀介质区密度
+  v0      = pow(E_ej,0.5)*pow(2*CONST_PI*rho_c*pow(r_c,5)/5/pow(R_ej,2)+       \
+            2*CONST_PI*rho_0*pow(R_ej,3)*(1-pow(R_ej/r_c,n-5))/(5-n),-0.5);
 
   r = D_EXPAND(x1*x1, + x2*x2, + x3*x3);
   r = sqrt(r);
@@ -171,13 +173,13 @@ void Init (double *us, double x1, double x2, double x3)
   {
    // us[RHO] = a[(int) fabs(x1*x2*100)]*rho_c*pow(r/r_c,-n);
     us[RHO] = rho_c*pow(r/r_c,-n);
-    us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2));
-    us[VX2] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2));
-    us[VX3] = R_ej/time0*(fabs(x3)/r);
+    us[VX1] = v0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2));
+    us[VX2] = v0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2));
+    us[VX3] = v0*(fabs(x3)/r);
     us[PRS] = rho_c*pow(r/r_c,-n)*CONST_kB*T/1.67e-6;
   }
 
-  //printf("%e\n",eta*M_ej*(3.0-n));
+  //printf("%e\n",R_ej/time0);
 
   theta = g_inputParam[THETA]*CONST_PI/180.0;
   phi   =   g_inputParam[PHI]*CONST_PI/180.0;
