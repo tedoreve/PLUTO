@@ -46,8 +46,8 @@ for i in range(width):
 #plt.imshow(x2)
 #plt.show()
 
-x1=np.rot90(x,1)+0.01
-x2=np.rot90(x,1)+0.01
+x1=np.rot90(x,1)+0.1
+x2=np.rot90(x,1)+0.1
 bx1=np.reshape(x1,width**2,1)  #13CO转12CO
 bx2=np.reshape(x2,width**2,1) 
 total=np.concatenate((rho,bx1,bx2))
