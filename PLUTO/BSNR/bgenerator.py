@@ -22,18 +22,19 @@ import matplotlib.pyplot as plt
 width=128
 ra=30
 
-x=np.zeros([width,width])
+x=np.zeros([width,width,width])
 for i in range(width):
     for j in range(width):
-        for k in range(width+width):
-            if i+j == k:
-                x[i,j] = k/10000
+        for k in range(width):
+            for l in range(3*width):
+                if i+j+k == l:
+                    x[i,j,k] = k/10000
             
 #plt.imshow(x2)
 #plt.show()
 
 x0=np.rot90(x,1)+0.001
-bx=np.reshape(x0,width**2,1)  #13CO转12CO
+bx=np.reshape(x0,width**3,1)  #13CO转12CO
  
 total=np.concatenate((bx,bx,bx))
 total=total.astype(float)
