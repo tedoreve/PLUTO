@@ -143,15 +143,15 @@ void Init (double *us, double x1, double x2, double x3)
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
-  us[PRS] = n_ISM*CONST_kB*T/1.67e-6;
+  us[PRS] = (g_gamma-1)*n_ISM*0.25;
 
   #if ADD_TURBULENCE == YES
   if (first_call){
     int k, input_var[200];
     for (k = 0; k< 200; k++) input_var[k] = -1;
-    input_var[0] = RHO;
-    input_var[1] = BX1;
-    input_var[2] = BX2;
+    input_var[0] = BX1;
+    input_var[1] = BX2;
+    input_var[2] = BX3;
     input_var[3] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
@@ -164,30 +164,30 @@ void Init (double *us, double x1, double x2, double x3)
   if (r <= r_c && r != 0)
   {
     us[RHO] = rho_c;
-    us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
-    us[VX2] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
-    us[VX3] = R_ej/time0*(fabs(x3)/r);
+    us[VX1] = r/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2));
+    us[VX2] = r/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2));
+    us[VX3] = r/time0*(fabs(x3)/r);
     us[PRS] = rho_c*CONST_kB*T/1.67e-6;
   }
   if (r >  r_c && r <= R_ej)
   {
    // us[RHO] = a[(int) fabs(x1*x2*100)]*rho_c*pow(r/r_c,-n);
     us[RHO] = rho_c*pow(r/r_c,-n);
-    us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
-    us[VX2] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
-    us[VX3] = R_ej/time0*(fabs(x3)/r);
+    us[VX1] = v0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
+    us[VX2] = v0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
+    us[VX3] = v0*(fabs(x3)/r);
     us[PRS] = rho_c*pow(r/r_c,-n)*CONST_kB*T/1.67e-6;
   }
 
-  printf("%e\n",R_ej/time0);
+  //printf("%e\n",R_ej/time0);
 
-  //theta = g_inputParam[THETA]*CONST_PI/180.0;
-  //phi   =   g_inputParam[PHI]*CONST_PI/180.0;
+  theta = g_inputParam[THETA]*CONST_PI/180.0;
+  phi   =   g_inputParam[PHI]*CONST_PI/180.0;
   B0    = g_inputParam[BMAG];
 
   //us[BX1] = B0*sin(theta)*cos(phi);
   //us[BX2] = B0*sin(theta)*sin(phi);
-  us[BX3] = 0.0;
+  //us[BX3] = 0.0;
 
   #if GEOMETRY == CARTESIAN
    us[AX1] = 0.0;
