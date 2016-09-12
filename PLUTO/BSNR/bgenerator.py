@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 #b=np.fromfile("rho0.dbl",dtype=np.float)
 #np.savetxt('xx.txt',b)
-width=128
+width=512
 ra=30
 
 x=np.zeros([width,width,width])
@@ -28,7 +28,7 @@ for i in range(width):
         for k in range(width):
             for l in range(3*width):
                 if i+j+k == l:
-                    x[i,j,k] = k/10000
+                    x[i,j,k] = l/10000
             
 #plt.imshow(x2)
 #plt.show()

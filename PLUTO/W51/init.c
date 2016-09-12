@@ -179,7 +179,7 @@ void Init (double *us, double x1, double x2, double x3)
     us[PRS] = rho_c*pow(r/r_c,-n)*CONST_kB*T/1.67e-6;
   }
 
-  printf("%e\n",R_ej/time0);
+  //printf("%e\n",R_ej/time0);
 
   //theta = g_inputParam[THETA]*CONST_PI/180.0;
   //phi   =   g_inputParam[PHI]*CONST_PI/180.0;
