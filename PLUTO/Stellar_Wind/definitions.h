@@ -27,6 +27,9 @@
 
 /* [Beg] user-defined constants (do not change this line) */
 
+#define  UNIT_DENSITY            CONST_mp
+#define  UNIT_LENGTH             CONST_pc
+#define  UNIT_VELOCITY           1.0e9
 
 /* [End] user-defined constants (do not change this line) */
 
@@ -34,7 +37,7 @@
 
 #define  INITIAL_SMOOTHING   NO
 #define  WARNING_MESSAGES    YES
-#define  PRINT_TO_FILE       YES
+#define  PRINT_TO_FILE       NO
 #define  INTERNAL_BOUNDARY   YES
 #define  SHOCK_FLATTENING    NO
 #define  CHAR_LIMITING       NO

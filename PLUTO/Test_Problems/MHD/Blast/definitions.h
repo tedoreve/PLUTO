@@ -1,6 +1,6 @@
 #define  PHYSICS                 MHD
-#define  DIMENSIONS              3
-#define  COMPONENTS              3
+#define  DIMENSIONS              2
+#define  COMPONENTS              2
 #define  GEOMETRY                CARTESIAN
 #define  BODY_FORCE              NO
 #define  COOLING                 NO
@@ -8,7 +8,7 @@
 #define  TIME_STEPPING           RK2
 #define  DIMENSIONAL_SPLITTING   NO
 #define  NTRACER                 0
-#define  USER_DEF_PARAMETERS     14
+#define  USER_DEF_PARAMETERS     7
 
 /* -- physics dependent declarations -- */
 
@@ -23,27 +23,19 @@
 
 /* -- user-defined parameters (labels) -- */
 
-#define  E_EJ                    0
-#define  M_EJ                    1
-#define  R_EJ                    2
-#define  N_H                     3
-#define  U_AM                    4
-#define  S_PI                    5
-#define  N_PI                    6
-#define  ETA                     7
-#define  BMAG                    8
-#define  THETA                   9
-#define  PHI                     10
-#define  GAMMA                   11
-#define  Temp                    12
-#define  t0                      13
+#define  P_IN                    0
+#define  P_OUT                   1
+#define  BMAG                    2
+#define  THETA                   3
+#define  PHI                     4
+#define  RADIUS                  5
+#define  GAMMA                   6
 
 /* [Beg] user-defined constants (do not change this line) */
 
 #define  UNIT_DENSITY            CONST_mp
 #define  UNIT_LENGTH             CONST_pc
 #define  UNIT_VELOCITY           1.0e9
-#define  ADD_TURBULENCE          YES
 
 /* [End] user-defined constants (do not change this line) */
 

@@ -151,8 +151,7 @@ void Init (double *us, double x1, double x2, double x3)
     for (k = 0; k< 200; k++) input_var[k] = -1;
     input_var[0] = BX1;
     input_var[1] = BX2;
-    input_var[2] = BX3;
-    input_var[3] = -1;
+    input_var[2] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;

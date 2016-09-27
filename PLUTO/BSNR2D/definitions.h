@@ -1,6 +1,6 @@
 #define  PHYSICS                 MHD
-#define  DIMENSIONS              3
-#define  COMPONENTS              3
+#define  DIMENSIONS              2
+#define  COMPONENTS              2
 #define  GEOMETRY                CARTESIAN
 #define  BODY_FORCE              NO
 #define  COOLING                 NO
