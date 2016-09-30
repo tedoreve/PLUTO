@@ -1,0 +1,12 @@
+USER           = unknown
+WORKING_DIR    = /mnt/d/Documents/Scripts/PLUTO/W51
+SYSTEM_NAME    = Linux
+NODE_NAME      = DESKTOP-S05CEV2
+RELEASE        = 3.4.0+
+ARCH           = x86_64
+BYTE_ORDER     = little
+VERSION        = #1 PREEMPT Thu Aug 1 17:06:05 CST 2013
+PLUTO_DIR      = /mnt/d/Documents/Scripts/PLUTO
+PLUTO_VERSION  = "4.2"
+C_COMPILER     = gcc
+MPI_C_COMPILER = 
