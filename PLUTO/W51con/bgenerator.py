@@ -6,7 +6,9 @@ Created on Thu Jun 16 10:23:47 2016
 """
 
 import numpy as np
-
+#import pyPLUTO as pp
+import os
+import sys
 
 
 #================================读取密度结构==================================
@@ -26,10 +28,10 @@ def resize(src,dstsize):#输入src 和size
     dst=np.array(np.zeros(dstsize),src.dtype)  
     factory=float(np.size(src,0))/dstsize[0]   
     factorx=float(np.size(src,1))/dstsize[1]  
-    print('factory',factory,'factorx',factorx)  
+    #print('factory',factory,'factorx',factorx)  
     srcheight=np.size(src,0)  
     srcwidth=np.size(src,1)  
-    print('srcwidth',srcwidth,'srcheight',srcheight)  
+    #print('srcwidth',srcwidth,'srcheight',srcheight)  
     for i in range(dstsize[0]):  
         for j in range(dstsize[1]):  
             y=float(i)*factory  
@@ -54,41 +56,61 @@ def resize(src,dstsize):#输入src 和size
                 dst[i,j]=(src[y,x])  
                 # print src[i,j]  
     return dst  
-
-print(np.size(pcdata,0))  
-pcdata=resize(pcdata,[512,512])  
+width=512
+pcdata=resize(pcdata,[width,width])  
 
 pcdata=np.rot90(pcdata,1)
 pcdata=np.flipud(pcdata)
 #plt.imshow(pcdata)
 #plt.show()
-#==============================================================================
+#================================加入星风=======================================
+#wdir = '../Stellar_Wind/'
+#nlinf = pp.nlast_info(w_dir=wdir)
+#
+##D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
+#D = pp.pload(10,w_dir=wdir)
+#print D.rho.shape
+##plt.imshow(np.log(D.rho[208:304,208:304]))
+##plt.show()
+#pcdata[228:284,228:284]=D.rho[228:284,228:284]
 
-#b=np.fromfile("rho0.dbl",dtype=np.float)
-#np.savetxt('xx.txt',b)
-width=512
+
+#=================================组合背景======================================
+
 ra=37
-rho=np.reshape(pcdata,width**2,1)  #13CO转12CO
+rho=np.reshape(pcdata,width**2,1)*20  #13CO转12CO
+
 
 x=np.zeros([width,width])
+x1=np.zeros([width,width])
+x2=np.zeros([width,width])
+y1=np.zeros([width,width])
+y2=np.zeros([width,width])
+widthi=32
+widthj=256
 for i in range(width):
-    for j in range(width):
-        for k in range(width+width):
-            if i+j == k:
-                x[i,j] = k**1.5/1000000
-            
+    for j in range(width):      
+        x1[i,j]=1e3*(i+widthi)/((i+widthi)**2+(j+widthj)**2)**1.5
+        x2[i,j]=1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**1.5
+#        for k in range(width+width):
+#            if i+j == k:
+#                x[i,j] = k**1.5/1000000
+#            
 #plt.imshow(x2)
 #plt.show()
+#y1[208:304,208:304]=x1[208:304,208:304]
+#y2[208:304,208:304]=x2[208:304,208:304]
 
-x1=np.rot90(x,1)+0.008
-x2=np.rot90(x,1)+0.008
-bx1=np.reshape(x1,width**2,1)  #13CO转12CO
-bx2=np.reshape(x2,width**2,1) 
+x1=np.rot90(x1)
+x2=np.rot90(x2)
+
+bx1=np.reshape(x1,width**2,1)
+bx2=np.reshape(x2,width**2,1)
 total=np.concatenate((rho,bx1,bx2))
 total=total.astype(float)
 total.tofile("rho0.dbl")
 
-#---------------------------------------------------------------------
+#-------------------------------网格定义----------------------------------------
 
 b=np.linspace(-ra,ra,width+1)
 c=np.linspace(1,width,width)
@@ -104,5 +126,5 @@ for i in range(len(c)):
 f.write('1\n')
 f.write('1 0.0 1.0')
 f.close()
-print(d)
-#---------------------------------------------------------------------
+#print(d)
+#------------------------------------------------------------------------------
