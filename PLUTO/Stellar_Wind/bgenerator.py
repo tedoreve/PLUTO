@@ -79,7 +79,7 @@ pcdata=np.flipud(pcdata)
 
 ra=37
 rho=np.reshape(pcdata,width**2,1)*20  #13CO转12CO
-rho=rho*0+20.0
+
 
 x=np.zeros([width,width])
 x1=np.zeros([width,width])
