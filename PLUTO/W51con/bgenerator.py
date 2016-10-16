@@ -6,21 +6,9 @@ Created on Thu Jun 16 10:23:47 2016
 """
 
 import numpy as np
-#import pyPLUTO as pp
-import os
-import sys
-
-
-#================================读取密度结构==================================
-import matplotlib.pyplot as plt
+import time as ti
 from astropy.io import fits
-from astropy import wcs
-
-hdulist=fits.open('W51C.fits')
-pchead=hdulist[0].header
-pcdata=hdulist[0].data
-hdulist.close()
- 
+#================================读取密度结构==================================
 ##双线性插值  
 def resize(src,dstsize):#输入src 和size  
     if src.ndim==3:  
@@ -49,82 +37,130 @@ def resize(src,dstsize):#输入src 和size
             w3=(cx-x)*(y-fy)  
             w4=(x-fx)*(y-fy)      
             if (x-np.floor(x)>1e-6 or y-np.floor(y)>1e-6):   
-                t=src[fy,fx]*w1+src[fy,cx]*w2+src[cy,fx]*w3+src[cy,cx]*w4
+                t=src[int(fy),int(fx)]*w1+src[int(fy),int(cx)]*w2+src[int(cy),int(fx)]*w3+src[int(cy),int(cx)]*w4
                 dst[i,j]=t  
                 #print t  
             else:       #映射到原图像刚好是整数的坐标  
-                dst[i,j]=(src[y,x])  
+                dst[i,j]=(src[int(y),int(x)])  
                 # print src[i,j]  
     return dst  
-width=512
-pcdata=resize(pcdata,[width,width])  
+    
+def density(filename,width,constant):
 
-pcdata=np.rot90(pcdata,1)
-pcdata=np.flipud(pcdata)
-#plt.imshow(pcdata)
-#plt.show()
+    hdulist=fits.open(filename)
+    pcdata=hdulist[0].data
+    hdulist.close()    
+    
+    pcdata=resize(pcdata,[width,width])  
+    
+    pcdata=np.rot90(pcdata,1)
+    pcdata=np.flipud(pcdata)
+    pcdata=pcdata*constant#13CO转12CO
+    return pcdata
+
+
+#================================加入团块=======================================
+def clumps(pcdata,width,number,r,index,c,rho_constant):
+
+    for k in range(number):
+        a = np.random.randint(width)
+        b = np.random.randint(width)
+        for i in range(width):
+            for j in range(width):
+                c = np.random.randint(r)
+                if (i-a)**2+(j-b)**2 < c**2:
+                    pcdata[i,j] = c*rho_constant*index**((i-a)**2+(j-b)**2)
+    return pcdata
+
 #================================加入星风=======================================
-#wdir = '../Stellar_Wind/'
-#nlinf = pp.nlast_info(w_dir=wdir)
-#
-##D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
-#D = pp.pload(10,w_dir=wdir)
-#print D.rho.shape
-##plt.imshow(np.log(D.rho[208:304,208:304]))
-##plt.show()
-#pcdata[228:284,228:284]=D.rho[228:284,228:284]
+def stellar_wind(pcdata,width,rho_constant,wdir,number,r):
+    
+    import pyPLUTO as pp
+    
+    nlinf = pp.nlast_info(w_dir=wdir)    
+    D = pp.pload(number,w_dir=wdir)
+    print(D.rho.shape)
+    
+    for i in range(width):
+        for j in range(width):
+            if (i-256)**2+(j-256)**2<r**2:
+                pcdata[i,j] = D.rho[i,j]
+    return pcdata
+#================================加入磁场=======================================
+def magnetism(width,widthi,widthj):
+
+    bx1 = np.zeros([width,width])
+    bx2 = np.zeros([width,width])
+
+    for i in range(width):
+        for j in range(width):      
+            bx1[i,j] = 1e3*(i+widthi)/((i+widthj)**2+(j+widthj)**2)**1.5
+            bx2[i,j] = 1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**1.5
+    
+    bx1  = np.rot90(bx1)
+    bx2  = np.rot90(bx2)
+    
+    bx1 = np.reshape(bx1,width**2,1)
+    bx2 = np.reshape(bx2,width**2,1)
+    return bx1 , bx2
 
 
-#=================================组合背景======================================
-
-ra=37
-rho=np.reshape(pcdata,width**2,1)*20  #13CO转12CO
-rho=rho*0+20.0
-
-x=np.zeros([width,width])
-x1=np.zeros([width,width])
-x2=np.zeros([width,width])
-y1=np.zeros([width,width])
-y2=np.zeros([width,width])
-widthi=256
-widthj=32
-for i in range(width):
-    for j in range(width):      
-        x1[i,j]=1e3*(i+widthi)/((i+widthi)**2+(j+widthj)**2)**1.5
-        x2[i,j]=1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**1.5
-#        for k in range(width+width):
-#            if i+j == k:
-#                x[i,j] = k**1.5/1000000
-#            
-#plt.imshow(x2)
-#plt.show()
-#y1[208:304,208:304]=x1[208:304,208:304]
-#y2[208:304,208:304]=x2[208:304,208:304]
-
-x1=np.rot90(x1)
-x2=np.rot90(x2)
-
-bx1=np.reshape(x1,width**2,1)
-bx2=np.reshape(x2,width**2,1)
-total=np.concatenate((rho,bx1,bx2))
-total=total.astype(float)
-total.tofile("rho0.dbl")
-
-#-------------------------------网格定义----------------------------------------
-
-b=np.linspace(-ra,ra,width+1)
-c=np.linspace(1,width,width)
-d=np.array([c,b]).T
-f=open('grid0.out','w')
-f.write('# GEOMETRY:   CARTESIAN\n')
-f.write(str(len(b)-1)+'\n')
-for i in range(len(c)):
-    f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
-f.write(str(len(b)-1)+'\n')
-for i in range(len(c)):
-    f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
-f.write('1\n')
-f.write('1 0.0 1.0')
-f.close()
-#print(d)
-#------------------------------------------------------------------------------
+#================================组合背景=======================================
+def combine(components,infilename,outfilename,width,rho_constant,sw,clump,mag):
+    
+    #密度
+    pcdata = np.random.rand(width,width)*rho_constant
+    rho    = np.reshape(pcdata,width**2,1) 
+    if 'bg' in components:
+        pcdata    = density(infilename,width,rho_constant)
+        rho       = np.reshape(pcdata,width**2,1)
+        total     = rho
+    if 'sw' in components:
+        wdir,number,r = sw
+        pcdata    = stellar_wind(pcdata,width,rho_constant,wdir,number,r)
+        rho       = np.reshape(pcdata,width**2,1)
+        total     = rho
+    if 'clump' in components:
+        number,r,index,c = clump
+        pcdata    = clumps(pcdata,width,number,r,index,c,rho_constant)
+        rho       = np.reshape(pcdata,width**2,1)
+        total     = rho
+        
+    #磁场
+    if 'mag' in components:
+        widthi,widthj = mag
+        bx1 , bx2 = magnetism(width,widthi,widthj)
+        total     = np.concatenate((rho,bx1,bx2))
+    
+    total     = total.astype(float)
+    total.tofile(outfilename)
+    return pcdata
+#================================网格定义=======================================
+def grid(outfilename,ra,width):
+    
+    b=np.linspace(-ra,ra,width+1)
+    c=np.linspace(1,width,width)
+    f=open(outfilename,'w')
+    f.write('# GEOMETRY:   CARTESIAN\n')
+    f.write(str(len(b)-1)+'\n')
+    for i in range(len(c)):
+        f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
+    f.write(str(len(b)-1)+'\n')
+    for i in range(len(c)):
+        f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
+    f.write('1\n')
+    f.write('1 0.0 1.0')
+    f.close()
+    return '空间构造完成！！！'
+ 
+#==============================================================================
+if __name__=='__main__':
+    print('开始原初构建！！！')
+    width = 512
+    rho_constant = 20
+    sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
+    clump = [2048,4,1.1,0.9]          #number,r,index,c
+    mag   = [256,256]                   #widthi,widthj
+    combine(['mag','clump'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
+    grid('grid0.out',37,512)
+    print(ti.asctime())

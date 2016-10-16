@@ -161,21 +161,17 @@ void Init (double *us, double x1, double x2, double x3)
                                               input data file -- */
   #endif
 
-/*  if (r <= 4)
+  if (r > 2.5 && r <= 3)
   {
-    us[RHO] = 0.05*pow(r/r_c,-5.0);
-    us[VX1] = 0.1*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2));
-    us[VX2] = 0.1*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2));
-    us[VX3] = 0.1/time0*(fabs(x3)/r);
-    us[PRS] = 0.05*CONST_kB*T/1.67e-6;
+    us[RHO] = 50*pow(r/r_c,0.0);
   }
-*/
+
 
   if (r <= r_c && r != 0)
   {
     us[RHO] = rho_c;
-    us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2));
-    us[VX2] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2));
+    us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
+    us[VX2] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x2/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
     us[VX3] = R_ej/time0*(fabs(x3)/r);
     us[PRS] = rho_c*CONST_kB*T/1.67e-6;
   }

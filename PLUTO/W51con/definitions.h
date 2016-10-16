@@ -47,7 +47,7 @@
 
 /* [End] user-defined constants (do not change this line) */
 
-/* -- supplementary constants (user editable) -- */
+/* -- supplementary constants (user editable) -- */ 
 
 #define  INITIAL_SMOOTHING         NO
 #define  WARNING_MESSAGES          NO

@@ -97,7 +97,7 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
   int   i, j, k, nv;
   double *x1, *x2, *x3;
   double  r, r0, cs;
-  double  Vwind  = 0.1, rho, vr;
+  double  Vwind  = 0.0117, rho, vr;
 
   x1 = grid[IDIR].xgc;
   x2 = grid[JDIR].xgc;
