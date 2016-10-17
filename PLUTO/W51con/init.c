@@ -163,7 +163,7 @@ void Init (double *us, double x1, double x2, double x3)
 
   if (r > 2.5 && r <= 3)
   {
-    us[RHO] = 50*pow(r/r_c,0.0);
+    us[RHO] = 60*pow(r/r_c,0.0);
   }
 
 
