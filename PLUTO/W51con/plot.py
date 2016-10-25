@@ -22,9 +22,6 @@ flux= (flux-np.mean(flux))*5+np.mean(flux)*5.1
 flux=nd.gaussian_filter(flux,sigma=(15,15),order=0)
 I.pldisplay(D, np.log(flux),x1=D.x1, \
             x2=D.x2,label1='x',label2='y',                                    \
-<<<<<<< HEAD
-            title=r'Flux [M=15 E=0.8 R=1 t=10 rho=50]',                         \
-=======
             title=r'Flux [M=15 E=0.8 R=1 t=3 rho=20]',                        
             cbar=(True,'vertical'))
 #savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
