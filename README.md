@@ -18,5 +18,3 @@
   
   I just add some useful scripts in it: plot.py can help you plot the results of the code, but you'd better to modify it by yourself. Sometimes, even myself cannot know what I am writing on. The others are easy to understand.
 
-###Example code for my projects
-  Oh, if you have understand the main code of PLUTO, you can immediately know how to use it. Hints: the bgenerator.py is used to generate background in terms of 'CO.fits'. And there are some redundant codes in the .py, I have not decided their end-result.
