@@ -13,7 +13,7 @@ from astropy.modeling.models import Gaussian2D
 from astropy import units as un
 from astropy import constants as con
 import astropy.visualization as v
-import astropy.tests.zmf as z
+#import astropy.tests.zmf as z
 
 hdulist = fits.open('grs-49-cube.fits')
 hdulist.info()                         #显示fits信息 

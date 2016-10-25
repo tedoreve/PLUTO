@@ -8,7 +8,7 @@ Created on Thu Jun 16 10:23:47 2016
 import numpy as np
 import time as ti
 from astropy.io import fits
-#================================读取密度结构==================================
+#================================加入背景======================================
 ##双线性插值  
 def resize(src,dstsize):#输入src 和size  
     if src.ndim==3:  
@@ -94,8 +94,8 @@ def magnetism(width,widthi,widthj):
 
     for i in range(width):
         for j in range(width):      
-            bx1[i,j] = 1e3*(i+widthi)/((i+widthj)**2+(j+widthj)**2)**1.5
-            bx2[i,j] = 1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**1.5
+            bx1[i,j] = 1e3*(i+widthi)/((i+widthj)**2+(j+widthj)**2)**2
+            bx2[i,j] = 1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**2
     
     bx1  = np.rot90(bx1)
     bx2  = np.rot90(bx2)
@@ -161,6 +161,6 @@ if __name__=='__main__':
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [2048,4,1.1,0.9]          #number,r,index,c
     mag   = [256,256]                   #widthi,widthj
-    combine(['mag','clump'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
+    combine(['mag'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
     grid('grid0.out',37,512)
     print(ti.asctime())
