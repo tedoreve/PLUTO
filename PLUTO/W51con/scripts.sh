@@ -1,3 +1,3 @@
 #! /bin/sh
 
-python $PLUTO_DIR/setup.py
+python2 $PLUTO_DIR/setup.py

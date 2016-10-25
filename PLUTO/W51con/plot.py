@@ -25,8 +25,7 @@ I.pldisplay(D, np.log(flux),x1=D.x1, \
 <<<<<<< HEAD
             title=r'Flux [M=15 E=0.8 R=1 t=10 rho=50]',                         \
 =======
-            title=r'Flux [M=15 E=0.8 R=1 t=3 rho=20]',                         \
->>>>>>> 0c15addce092344029f364f8d9e72bba75d9063f
+            title=r'Flux [M=15 E=0.8 R=1 t=3 rho=20]',                        
             cbar=(True,'vertical'))
 #savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
 show()
