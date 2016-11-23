@@ -160,12 +160,12 @@ void Init (double *us, double x1, double x2, double x3)
   InputDataInterpolate(us, x1, x2, x3);  /* -- interpolate density from
                                               input data file -- */
   #endif
-
+/*
   if (r > 2.5 && r <= 3)
   {
     us[RHO] = 60*pow(r/r_c,0.0);
   }
-
+*/
 
   if (r <= r_c && r != 0)
   {
