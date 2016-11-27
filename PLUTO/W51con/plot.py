@@ -19,10 +19,10 @@ I = pp.Image()
 flux=D.rho*(D.bx1**2+D.bx2**2)**2.0*(D.vx1**2+D.vx2**2)**0
 print flux.shape
 flux= (flux-np.mean(flux))*5+np.mean(flux)*5.1
-#flux=nd.gaussian_filter(flux,sigma=(15,15),order=0)
+flux=nd.gaussian_filter(flux,sigma=(15,15),order=0)
 I.pldisplay(D, np.log(flux),x1=D.x1, \
-            x2=D.x2,label1='x',label2='y',                                    \
-            title=r'Flux [M=15 E=0.8 R=1 t=3 rho=20]',                        
+            x2=D.x2,label1='l offset (pc)',label2='b offset (pc)',                                    \
+            title=r' ',                        
             cbar=(True,'vertical'))
 #savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
 show()

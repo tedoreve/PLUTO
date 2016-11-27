@@ -92,15 +92,21 @@ def magnetism(width,widthi,widthj):
 
     bx1 = np.zeros([width,width])
     bx2 = np.zeros([width,width])
+    x   = np.zeros([width,width])
+
 
     for i in range(width):
         for j in range(width):
-            bx1[i,j] = 1e3*(i+widthi)/((i+widthj)**2+(j+widthj)**2)**2
-            bx2[i,j] = 1e3*(j+widthj)/((i+widthi)**2+(j+widthj)**2)**2
+            for l in range(2*width):
+                if i+j == l:
+                    x[i,j] = l/100000
 
-    bx1  = np.rot90(bx1)
-    bx2  = np.rot90(bx2)
-
+    bx1  = np.rot90(x)
+    bx2  = np.rot90(x)
+    
+    bx1 = bx1.T
+    bx2 = bx2.T
+    
     bx1 = np.reshape(bx1,width**2,1)
     bx2 = np.reshape(bx2,width**2,1)
     return bx1 , bx2
@@ -135,7 +141,7 @@ def combine(components,infilename,outfilename,width,rho_constant,sw,clump,mag):
 
     total     = total.astype(float)
     total.tofile(outfilename)
-    return pcdata
+    return bx1,bx2
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -158,10 +164,10 @@ def grid(outfilename,ra,width):
 if __name__=='__main__':
     print('开始原初构建！！！')
     width = 512
-    rho_constant = 1
+    rho_constant = 50
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]          #number,r,index,e
-    mag   = [256,256]                   #widthi,widthj
-    combine(['mag'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
+    mag   = [10,10]                   #widthi,widthj
+    bx1,bx2 = combine(['mag'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
     grid('grid0.out',37,512)
     print(ti.asctime())

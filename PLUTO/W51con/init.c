@@ -235,6 +235,7 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
  *
  *********************************************************************** */
 {
+/*
   static int first_call = 1;
   double theta, phi;
   static double sth,cth,sphi,cphi;
