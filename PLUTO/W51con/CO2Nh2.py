@@ -13,7 +13,7 @@ from astropy.modeling.models import Gaussian2D
 from astropy import units as un
 from astropy import constants as con
 import astropy.visualization as v
-#import astropy.tests.zmf as z
+import astropy.tests.zmf as z
 
 hdulist = fits.open('grs-49-cube.fits')
 hdulist.info()                         #显示fits信息 
@@ -29,7 +29,7 @@ b2=0.05
 
 x1,y1,a=w.wcs_world2pix(l1,b1,0,0)         #用读取的坐标数据将经纬度转变成pixel数
 x2,y2,a=w.wcs_world2pix(l2,b2,0,0)
-img=(pcdata[354,:,:])*2e20/(z.distance2diameter(4.3,60)*un.pc.to('cm'))
+img=(pcdata[354,:,:])*2e20/(4300*un.pc.to('cm'))
 img=np.abs(np.nan_to_num(img))
 plt.imshow(img[y1:y2,x1:x2],origin='lower',interpolation='nearest',      \
                extent=[l1,l2,b1,b2])

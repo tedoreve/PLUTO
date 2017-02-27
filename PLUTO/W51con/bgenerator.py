@@ -99,13 +99,13 @@ def magnetism(width,widthi,widthj):
         for j in range(width):
             for l in range(2*width):
                 if i+j == l:
-                    x[i,j] = l/100000
+                    x[i,j] = l
 
     bx1  = np.rot90(x)
     bx2  = np.rot90(x)
     
-    bx1 = bx1.T
-    bx2 = bx2.T
+    bx1 = bx1.T/500000
+    bx2 = bx2.T/500000
     
     bx1 = np.reshape(bx1,width**2,1)
     bx2 = np.reshape(bx2,width**2,1)
@@ -113,10 +113,10 @@ def magnetism(width,widthi,widthj):
 
 
 #================================组合背景=======================================
-def combine(components,infilename,outfilename,width,rho_constant,sw,clump,mag):
+def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,mag):
 
     #密度
-    pcdata = 1/np.random.power(2.4,[width,width])*rho_constant
+    pcdata = 1/np.random.power(index,[width,width])*rho_constant
     rho    = np.reshape(pcdata,width**2,1)
     if 'bg' in components:
         pcdata    = density(infilename,width,rho_constant)
@@ -137,11 +137,13 @@ def combine(components,infilename,outfilename,width,rho_constant,sw,clump,mag):
     if 'mag' in components:
         widthi,widthj = mag
         bx1 , bx2 = magnetism(width,widthi,widthj)
+        bx1 = bx1 + 0.001
+        bx2 = bx2 + 0.001
         total     = np.concatenate((rho,bx1,bx2))
 
     total     = total.astype(float)
     total.tofile(outfilename)
-    return bx1,bx2
+    return bx1
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -164,10 +166,11 @@ def grid(outfilename,ra,width):
 if __name__=='__main__':
     print('开始原初构建！！！')
     width = 512
-    rho_constant = 50
+    index = 2.4
+    rho_constant = 20
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]          #number,r,index,e
     mag   = [10,10]                   #widthi,widthj
-    bx1,bx2 = combine(['mag'],'W51C.fits','rho0.dbl',width,rho_constant,sw,clump,mag)
+    b = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
     grid('grid0.out',37,512)
     print(ti.asctime())
