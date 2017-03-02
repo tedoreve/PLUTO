@@ -10,33 +10,42 @@ import numpy as np
 
 
 #================================读取密度结构==================================
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 
 
 #==============================================================================
+def magnetism(width):
 
-#b=np.fromfile("rho0.dbl",dtype=np.float)
-#np.savetxt('xx.txt',b)
+    bx  = np.zeros([width,width,width])
+    x   = np.zeros([width,width,width])
+
+
+    for i in range(width):
+        print(i)
+        for j in range(width):
+            for k in range(width):
+                for l in range(3*width):
+                    if i+j+k == l:
+                        x[i,j,k] = l
+
+    bx   = np.rot90(x)
+    bx   = bx.T/500000
+    bx = np.reshape(bx,width**3,1) + 0.001
+    
+    return bx
+#==============================================================================
 width=128
-ra=30
+ra=37
+index=2.4
+rho_constant=20
 
-x=np.zeros([width,width,width])
-for i in range(width):
-    for j in range(width):
-        for k in range(width):
-            for l in range(3*width):
-                if i+j+k == l:
-                    x[i,j,k] = l/10000
-            
-#plt.imshow(x2)
-#plt.show()
-
-x0=np.rot90(x,1)+0.001
-bx=np.reshape(x0,width**3,1)  #13CO转12CO
+rho    = 1/np.random.power(index,[width,width,width])*rho_constant
+rho    = np.reshape(rho,width**3,1)
+bx     = magnetism(width)
  
-total=np.concatenate((bx,bx,bx))
+total=np.concatenate((rho,bx,bx,bx))
 total=total.astype(float)
 total.tofile("rho0.dbl")
 

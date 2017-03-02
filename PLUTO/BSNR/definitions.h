@@ -43,7 +43,7 @@
 #define  UNIT_DENSITY            CONST_mp
 #define  UNIT_LENGTH             CONST_pc
 #define  UNIT_VELOCITY           1.0e9
-#define  ADD_TURBULENCE          YES
+#define  ADD_TURBULENCE          NO
 
 /* [End] user-defined constants (do not change this line) */
 
