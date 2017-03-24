@@ -93,9 +93,17 @@ E_gain  = 100*B*(v/1.0e8)**2/f/Rj                      #粒子在激波中的能
 fig, axes = plt.subplots(nrows=2, ncols=2)
 ax0, ax1, ax2, ax3 = axes.flat
 ax0.plot(np.log10(t),np.log10(v))
+ax0.set_xlabel('log(time/year)')
+ax0.set_ylabel('log(velocity/(cm/s))')
 ax1.plot(np.log10(t),np.log10(R*un.cm.to('pc')))
+ax1.set_xlabel('log(time/year)')
+ax1.set_ylabel('log(radius/pc)')
 ax2.plot(np.log10(t),np.log10(E_e))
+ax2.set_xlabel('log(time/year)')
+ax2.set_ylabel('log(E$_e$/MeV)')
 ax3.plot(np.log10(t),np.log10(E_p))
+ax3.set_xlabel('log(time/year)')
+ax3.set_ylabel('log(E$_p$/MeV)')
 
 
     
