@@ -160,8 +160,14 @@ void Init (double *us, double x1, double x2, double x3)
   InputDataInterpolate(us, x1, x2, x3);  /* -- interpolate density from
                                               input data file -- */
   #endif
+/*
+  if (r > 2.5 && r <= 3)
+  {
+    us[RHO] = 60*pow(r/r_c,0.0);
+  }
+*/
 
-  if (r <= r_c && r != 0)
+  if (r <= R_ej && r != 0)
   {
     us[RHO] = rho_c;
     us[VX1] = R_ej/time0*(sqrt(x1*x1+x2*x2)/r)*(x1/sqrt(x1*x1+x2*x2))*pow(r/r_c,-s);
@@ -169,6 +175,7 @@ void Init (double *us, double x1, double x2, double x3)
     us[VX3] = R_ej/time0*(fabs(x3)/r);
     us[PRS] = rho_c*CONST_kB*T/1.67e-6;
   }
+/*
   if (r >  r_c && r <= R_ej)
   {
    // us[RHO] = a[(int) fabs(x1*x2*100)]*rho_c*pow(r/r_c,-n);
@@ -178,8 +185,7 @@ void Init (double *us, double x1, double x2, double x3)
     us[VX3] = R_ej/time0*(fabs(x3)/r);
     us[PRS] = rho_c*pow(r/r_c,-n)*CONST_kB*T/1.67e-6;
   }
-
-  //printf("%e\n",R_ej/time0);
+*/
 
   //theta = g_inputParam[THETA]*CONST_PI/180.0;
   //phi   =   g_inputParam[PHI]*CONST_PI/180.0;
@@ -229,6 +235,7 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
  *
  *********************************************************************** */
 {
+/*
   static int first_call = 1;
   double theta, phi;
   static double sth,cth,sphi,cphi;

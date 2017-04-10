@@ -22,14 +22,14 @@ pcdata = hdulist[0].data  #读取fits数据
 hdulist.close()
 w=wcs.WCS(pchead)
 
-l1=49.6
-l2=48.6
-b1=-1.0
-b2=0.0
+l1=49.70
+l2=48.70
+b1=-0.95
+b2=0.05
 
 x1,y1,a=w.wcs_world2pix(l1,b1,0,0)         #用读取的坐标数据将经纬度转变成pixel数
 x2,y2,a=w.wcs_world2pix(l2,b2,0,0)
-img=(pcdata[354,:,:])*2e20/(z.distance2diameter(3.2,20)*un.pc.to('cm'))
+img=(pcdata[354,:,:])*2e20/(4300*un.pc.to('cm'))
 img=np.abs(np.nan_to_num(img))
 plt.imshow(img[y1:y2,x1:x2],origin='lower',interpolation='nearest',      \
                extent=[l1,l2,b1,b2])
@@ -39,9 +39,9 @@ xx=img[y1:y2,x1:x2]
 pchead['NAXIS']=2
 pchead['NAXIS1']=162
 pchead['NAXIS2']=162
-pchead['CRVAL1']=49.1
+pchead['CRVAL1']=49.2
 pchead['CRPIX1']=81
-pchead['CRVAL2']=-0.5
+pchead['CRVAL2']=-0.45
 pchead['CRPIX2']=81
 pchead.remove('NAXIS3')
 #pchead.remove('NAXIS4')
