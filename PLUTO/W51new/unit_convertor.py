@@ -1,6 +1,7 @@
 from astropy import units as un
 from astropy import constants as con
-
+import numpy as np
+import matplotlib.pyplot as plt
 #          定义的参量               数值备注       真正在程序中用的值       CGS单位               简略单位
 ##define  UNIT_DENSITY            1 CONST_mp           1.67e-24           g     cm^-3     
 ##define  UNIT_LENGTH             1 CONST_pc           3.09e18                  cm
@@ -37,12 +38,19 @@ P   /= UNIT_P
 E   /= UNIT_E
 M   /= UNIT_M
 
-print('n = ', n, '\n'
-      'l = ', l, '\n'
-      'v = ', v, '\n'
-      'B = ', B, '\n'
-      't = ', t, '\n'
-      'P = ', P, '\n'
-      'E = ', E, '\n'
-      'M = ', M, '\n')
+#print('n = ', n, '\n'
+#      'l = ', l, '\n'
+#      'v = ', v, '\n'
+#      'B = ', B, '\n'
+#      't = ', t, '\n'
+#      'P = ', P, '\n'
+#      'E = ', E, '\n'
+#      'M = ', M, '\n')
 
+def g(x,u,o1,o2):
+    return np.exp(-0.5*((x-u)/((np.arctan(x-u)+np.pi)/2/np.pi*(o2-o1)+o1))**2)
+x=np.linspace(1,300,100)
+o1=50
+o2=1
+u=200
+plt.plot(x,g(x,u,o1,o2))  

@@ -126,16 +126,15 @@ void Init (double *us, double x1, double x2, double x3)
   time0   = g_inputParam[t0];           //初始时间
   g_gamma = g_inputParam[GAMMA];        //绝热系数
 
-//  r_c     = R_ej*pow(1.0-eta*M_ej*(3.0-n)/(4.0*CONST_PI*rho_0*pow(R_ej,3.0)),1.0/(3.0-n)); //激波均匀介质区半径
-  r_c     = R_ej*pow((1-eta*n/3)/(1-eta),1/(n-3));
+  r_c     = R_ej*pow(1.0-eta*M_ej*(3.0-n)/(4.0*CONST_PI*rho_0*pow(R_ej,3.0)),1.0/(3.0-n)); //激波均匀介质区半径
   rho_c   = (1-eta)*M_ej/(4/3*CONST_PI*pow(r_c,3)); //激波后均匀介质区密度
   //v0      = pow(E_ej,0.5)*pow(2*CONST_PI*rho_c*pow(r_c,5)/5/pow(R_ej,2)+       \
   //          2*CONST_PI*rho_0*pow(R_ej,3)*(1-pow(R_ej/r_c,n-5))/(5-n),-0.5);
-  C       = 2.0*CONST_PI*pow(r_c,n)*rho_c*pow(R_ej,-2*s);
+  C       = 2.0/3.0*CONST_PI*pow(r_c,n)*rho_c*(3-n)*pow(R_ej,-2*s);
   index   = 2*s+3-n;
   
-  part1   = C/pow(r_c,n)*pow(r_c,2*s+3)/(2*s+3);
-  part2   = C*(pow(R_ej,index)-pow(r_c,index))/index;
+  part1   = 0.5*(1-eta)*M_ej*pow(r_c/R_ej,2*s);
+  part2   = C/index*(pow(r_c,index)-pow(R_ej,index));
   v0      = pow(E_ej,0.5)*pow(part1+part2,-0.5);
 
   r = D_EXPAND(x1*x1, + x2*x2, + x3*x3);
