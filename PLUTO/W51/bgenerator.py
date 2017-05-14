@@ -97,7 +97,7 @@ def toff(f):
     return wrapper
 
 #@toff
-def magnetism(width,widthi,widthj):
+def magnetism(width):
 
     bx1 = np.zeros([width,width])
     bx2 = np.zeros([width,width])
@@ -143,10 +143,9 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     #磁场
     if 'mag' in components:
-        widthi,widthj = mag
-        bx1 , bx2 = magnetism(width,widthi,widthj)
-        bx1 = bx1 + 0.001
-        bx2 = bx2 + 0.001
+        bx1 , bx2 = magnetism(width)
+        bx1 = (bx1 + 0.001)*mag
+        bx2 = (bx2 + 0.001)*mag
         total     = np.concatenate((rho,bx1,bx2))
 
     total     = total.astype(float)
@@ -175,11 +174,12 @@ if __name__=='__main__':
     print('开始原初构建！！！')
     width = 512
     index = 2.4
-    rho_constant = 20
+    u     = 1.3
+    rho_constant = 0.35*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
-    clump = [200,10,1.0,50.0]          #number,r,index,e
-    mag   = [10,10]                   #widthi,widthj
+    clump = [200,10,1.0,50.0]             #number,r,index,e
+    mag   = 3.2                           #widthi,widthj
     b = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
-    grid('grid0.out',37,width)
+    grid('grid0.out',37.5,width)
     print(ti.asctime())
     

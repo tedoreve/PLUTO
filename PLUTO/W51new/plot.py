@@ -12,7 +12,7 @@ nlinf = pp.nlast_info(w_dir=wdir)
 
 if choose == 'single':
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
-    D = pp.pload(10,w_dir=wdir)
+    D = pp.pload(30,w_dir=wdir)
 #    print D.bx1.shape
     
     I = pp.Image()

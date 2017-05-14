@@ -18,7 +18,7 @@
 #define  BACKGROUND_FIELD        NO
 #define  RESISTIVITY             NO
 #define  THERMAL_CONDUCTION      NO
-#define  VISCOSITY               NO
+#define  VISCOSITY               EXPLICIT
 #define  ROTATING_FRAME          NO
 
 /* -- user-defined parameters (labels) -- */
@@ -30,13 +30,13 @@
 #define  U_AM                    4
 #define  S_PI                    5
 #define  N_PI                    6
-#define  ETA                     7
+#define  W_C                     7
 #define  BMAG                    8
 #define  THETA                   9
 #define  PHI                     10
 #define  GAMMA                   11
 #define  Temp                    12
-#define  t0                      13
+#define  NU_VISC                 13
 
 /* [Beg] user-defined constants (do not change this line) */
 
