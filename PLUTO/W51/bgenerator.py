@@ -150,7 +150,7 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     total     = total.astype(float)
     total.tofile(outfilename)
-    return bx1
+    return rho
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -175,7 +175,7 @@ if __name__=='__main__':
     width = 512
     index = 2.4
     u     = 1.3
-    rho_constant = 0.35*u
+    rho_constant = 0.3*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]             #number,r,index,e
     mag   = 3.2                           #widthi,widthj

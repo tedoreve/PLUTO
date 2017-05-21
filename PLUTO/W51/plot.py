@@ -8,52 +8,53 @@ import matplotlib.pylab as plb
 import pyPLUTO as pp
 import scipy.ndimage as nd
 
-choose = 'single' #single or multiple or temp
-
-wdir = './'
-nlinf = pp.nlast_info(w_dir=wdir)
-
-if choose == 'single':
+def single(ty,t,E,rho,sigma,wdir):
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
-    D = pp.pload(17,w_dir=wdir)
-#    print D.bx1.shape
-    
-    I = pp.Image()
+    D = pp.pload(t/1000-1,w_dir=wdir)   
     flux=D.rho*(D.bx1**2+D.bx2**2)**1.25*(D.vx1**2+D.vx2**2)**0
-#    print flux.shape
     flux= (flux-np.mean(flux))*1+np.mean(flux)*1
-    flux=nd.gaussian_filter(flux,sigma=(14,14),order=0)
-#    I.pldisplay(D, np.log10(flux),x1=D.x1, \
-#                x2=D.x2,label1='l offset (pc)',label2='b offset (pc)',                                    \
-#                title='Relative Radio Flux',                        
-#                cbar=(True,'vertical'))
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    neg = ax.imshow(np.log10(flux).T,origin='lower',extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
-    levels = np.arange(-7.1, -3.1, 0.5)
-#    contour(np.log10(flux).T, levels,
-#                 origin='lower',
-#                 linewidths=2,
-#                 extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
-    cbar = fig.colorbar(neg,ax=ax)
-    cbar.set_label('log(S)')
-    ax.set_xlabel('l offset (pc)')
-    ax.set_ylabel('b offset (pc)')
-    ax.set_title('Relative Radio Flux')
-    fig.subplots_adjust(top=0.95,bottom=0.09,left=0.0,right=0.95)
-#    T = pp.Tools()
-#    newdims = 2*(20,)
-#    Xmesh, Ymesh = meshgrid(D.x1.T,D.x2.T)
-#    xcong = T.congrid(Xmesh,newdims,method='linear')
-#    ycong = T.congrid(Ymesh,newdims,method='linear')
-#    velxcong = T.congrid(D.bx1.T,newdims,method='linear')
-#    velycong = T.congrid(D.bx2.T,newdims,method='linear')
-#    gca().quiver(xcong, ycong, velxcong, velycong,color='w')
-#    show()
-    fig.savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
-#    close()
+    flux=nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
+    if ty == 'flux':
+        fig = plt.figure(figsize=(7,6))
+        ax = fig.add_subplot(111)
+        neg = ax.imshow(np.log10(flux).T,origin='lower',extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
+        levels = np.arange(-5.5, -4, 0.5)
+        plt.contour(np.log10(flux).T, levels,
+                     origin='lower',
+                     linewidths=2,
+                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
+        cbar = fig.colorbar(neg,ax=ax)
+        cbar.set_label(r'log(S)')
+        ax.set_xlabel('l offset (pc)')
+        ax.set_ylabel('b offset (pc)')
+        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
+        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
+        fig.savefig('t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
 
-if choose == 'multiple':
+    else:
+        fig = plt.figure(figsize=(7,6))
+        ax = fig.add_subplot(111)
+        neg = ax.imshow(np.log10(D.rho).T,origin='lower',extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
+        cbar = fig.colorbar(neg,ax=ax)
+        cbar.set_label(r'log($\mathregular{\rho/cm^{-3}}$)')
+        ax.set_xlabel('l offset (pc)')
+        ax.set_ylabel('b offset (pc)')
+        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
+        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
+        T = pp.Tools()
+        newdims = 2*(20,)
+        Xmesh, Ymesh = np.meshgrid(D.x1.T,D.x2.T)
+        xcong = T.congrid(Xmesh,newdims,method='linear')
+        ycong = T.congrid(Ymesh,newdims,method='linear')
+        velxcong = T.congrid(D.bx1.T,newdims,method='linear')
+        velycong = T.congrid(D.bx2.T,newdims,method='linear')
+        plt.gca().quiver(xcong, ycong, velxcong, velycong,color='w')
+    #    plt.show()
+        fig.savefig('rho-t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
+    #    close()
+        
+
+def multiple(wdir):
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
     for i in range(30):
         D = pp.pload(i,w_dir=wdir)
@@ -75,7 +76,7 @@ if choose == 'multiple':
         plt.savefig('20_'+str(i)+'.png') # Only to be saved as either .png or .jpg
         plt.close()
 #    show()
-if choose == 'temp':
+def temp(wdir):
     D = pp.pload(30,w_dir=wdir)
     
     I = pp.Image()
@@ -89,3 +90,20 @@ if choose == 'temp':
                 cbar=(True,'vertical'))
 #    savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
     plt.show()
+#==================================main========================================  
+if __name__=='__main__':   
+    #font = {'family' : 'serif',  
+    #        'weight' : 'normal',  
+    #        'size'   : 12,  
+    #        }  
+    
+    choose = 'single' #single or multiple or temp
+    ty     = 'flux'    
+    t      = 18000   
+    E      = 1.3
+    rho    = 0.3
+    sigma  = 14
+    
+    wdir = './'
+    nlinf = pp.nlast_info(w_dir=wdir)
+    single(ty,t,E,rho,sigma,wdir)
