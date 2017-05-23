@@ -88,36 +88,33 @@ def stellar_wind(pcdata,width,rho_constant,wdir,number,r):
                 pcdata[i,j] = D.rho[i,j]
     return pcdata
 #================================加入磁场=======================================
-def magnetism(width,widthi,widthj):
+def toff(f):
+    def wrapper(*args):
+        start = ti.time()
+        f(*args)
+        end   = ti.time()
+        print(end-start)
+    return wrapper
 
-    bx1 = np.zeros([width,width])
-    bx2 = np.zeros([width,width])
-    x   = np.zeros([width,width])
+def f(i,j,k):
+    return i+j+k
 
-
-    for i in range(width):
-        for j in range(width):
-            for l in range(2*width):
-                if i+j == l:
-                    x[i,j] = l
-
-    bx1  = np.rot90(x)
-    bx2  = np.rot90(x)
-    
-    bx1 = bx1.T/500000
-    bx2 = bx2.T/500000
-    
-    bx1 = np.reshape(bx1,width**2,1)
-    bx2 = np.reshape(bx2,width**2,1)
-    return bx1 , bx2
+#@toff
+def magnetism(width):
+    x = np.fromfunction(f,(width,width,width))/500000
+#    bx  = np.rot90(x)    
+#    bx = bx.T/500000    
+    bx = np.reshape(x,width**3,1)
+    return bx, bx, bx
 
 
 #================================组合背景=======================================
 def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,mag):
 
     #密度
-    pcdata = 1/np.random.power(index,[width,width])*rho_constant
-    rho    = np.reshape(pcdata,width**2,1)
+    pcdata = 1/np.random.power(index,[width,width,width])*rho_constant
+#    pcdata = np.zeros([width,width,width])+rho_constant
+    rho    = np.reshape(pcdata,width**3,1)
     if 'bg' in components:
         pcdata    = density(infilename,width,rho_constant)
         rho       = np.reshape(pcdata,width**2,1)
@@ -135,15 +132,15 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     #磁场
     if 'mag' in components:
-        widthi,widthj = mag
-        bx1 , bx2 = magnetism(width,widthi,widthj)
-        bx1 = bx1 + 0.001
-        bx2 = bx2 + 0.001
-        total     = np.concatenate((rho,bx1,bx2))
-
+        bx1 , bx2 , bx3 = magnetism(width)
+        bx1 = (bx1 + 0.001)*mag
+        bx2 = (bx2 + 0.001)*mag
+        bx3 = (bx3 + 0.001)*mag
+        total = np.concatenate((rho,bx1,bx2,bx3))
+#
     total     = total.astype(float)
     total.tofile(outfilename)
-    return bx1
+    return bx1, bx2, bx3
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -157,20 +154,25 @@ def grid(outfilename,ra,width):
     f.write(str(len(b)-1)+'\n')
     for i in range(len(c)):
         f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
-    f.write('1\n')
-    f.write('1 0.0 1.0')
+    f.write(str(len(b)-1)+'\n')
+    for i in range(len(c)):
+        f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
+#    f.write('1\n')
+#    f.write('1 0.0 1.0')
     f.close()
     return '空间构造完成！！！'
 
 #==============================================================================
 if __name__=='__main__':
     print('开始原初构建！！！')
-    width = 512
+    width = 256
     index = 2.4
-    rho_constant = 20
+    u     = 1.3
+    rho_constant = 0.21*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
-    clump = [200,10,1.0,50.0]          #number,r,index,e
-    mag   = [10,10]                   #widthi,widthj
-    b = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
-    grid('grid0.out',37,512)
+    clump = [200,10,1.0,50.0]             #number,r,index,e
+    mag   = 3.2                           #widthi,widthj
+    b1,b2,b3 = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
+    grid('grid0.out',37.5,width)
     print(ti.asctime())
+    

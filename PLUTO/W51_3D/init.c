@@ -110,49 +110,60 @@ void Init (double *us, double x1, double x2, double x3)
  *********************************************************************** */
 {
   static int first_call = 1;
-  double r, theta, phi, B0, E_ej, M_ej, R_ej, n_h, rho_0, eta, s, n, n_ISM, r_c, rho_c, T, time0, g_gamma, v0;
+  double r, theta, phi, B0, E_ej, M_ej, R_ej, n_h, w_c, s, n, n_ISM, r_c, T, u, g_gamma;
+  double fnc, alpha, v_ej, t, rho_ch, R_ch, eta, ph, l, up, down;
   E_ej    = g_inputParam[E_EJ];         //爆发能量
   M_ej    = g_inputParam[M_EJ];         //爆发质量
   R_ej    = g_inputParam[R_EJ];         //爆发半径
   n_h     = g_inputParam[N_H];          //氢数密度
-  n_ISM   = n_h*g_inputParam[U_AM];     //介质总体数密度，U_AM是平均分子质量
-  eta     = g_inputParam[ETA];          //激波区质量与爆发总质量之比
-  n       = g_inputParam[N_PI];         //激波区密度幂指数
-  s       = g_inputParam[S_PI];         //周围介质密度幂指数
-  rho_0   = n_ISM;                      //激波后均匀介质区数密度
+  u       = g_inputParam[U_AM];            //介质总体数密度，U是平均分子权重
+  w_c     = g_inputParam[W_C];          //激波区质量与爆发总质量之比
+  n       = g_inputParam[N_PI];            //激波区密度幂指数
+  s       = g_inputParam[S_PI];            //激波区速度幂指数
+  n_ISM   = n_h*u;                     //激波前均匀介质区数密度
   T       = g_inputParam[Temp];         //初始温度
-  time0   = g_inputParam[t0];           //初始时间
   g_gamma = g_inputParam[GAMMA];        //绝热系数
 
-  r_c     = R_ej*pow(1.0-eta*M_ej*(3.0-n)/(4.0*CONST_PI*rho_0*pow(R_ej,3.0)),1.0/(3.0-n)); //激波均匀介质区半径
-  rho_c   = (1-eta)*M_ej/(4/3*CONST_PI*pow(r_c,3)); //激波后均匀介质区密度
-  v0      = pow(E_ej,0.5)*pow(2*CONST_PI*rho_c*pow(r_c,5)/5/pow(R_ej,2)+       \
-            2*CONST_PI*rho_0*pow(R_ej,3)*(1-pow(R_ej/r_c,n-5))/(5-n),-0.5);
+  r_c     = R_ej*w_c;
+  fnc     = 3.0/4.0/CONST_PI*(1.0-n/3.0)/(1.0-n/3.0*pow(w_c,3.0-n));
+  alpha   = (3.0-n)/(5.0-n)*(pow(w_c,n-5.0)-n/5.0)/(pow(w_c,n-3.0)-n/3.0)*pow(w_c,2);
+  v_ej    = pow(E_ej/(M_ej*alpha*0.5),0.5);    
+  t       = R_ej/v_ej;   
+  rho_ch  = M_ej/pow(R_ej,3);    
+  R_ch    = pow(M_ej,1.0/3.0)*pow(n_ISM,-1.0/3.0);
+  
+  ph      = 1.1;  //n=0 
+  l       = 0.343;
+//  up      = 1 + (n-3)/3*pow(phi/l*fnc,0.5)*pow(R_ej,1.5)
+//  down    = 1 + (n/3)*pow(phi/l*fnc,0.5)*pow(R_ej,1.5)
+//  eta     = up/down
+   
+//  rho_c   = (1-eta)*M_ej/(4/3*CONST_PI*pow(r_c,3)); //激波后均匀介质区密度
+//  C       = 2.0*CONST_PI*pow(r_c,n)*rho_c*pow(R_ej,-2*s);
+//  index   = 2*s+3-n;
+//  
+//  part1   = C/pow(r_c,n)*pow(r_c,2*s+3)/(2*s+3);
+//  part2   = C*(pow(R_ej,index)-pow(r_c,index))/index;
+//  v0      = pow(E_ej,0.5)*pow(part1+part2,-0.5);
 
   r = D_EXPAND(x1*x1, + x2*x2, + x3*x3);
   r = sqrt(r);
 
-  srand((unsigned)time(NULL));
-  int i,a[10000];
-  for(i=0;i<10000;i++)
-  {
-  a[i]=rand()%10001;
-  a[i]=(a[i]-5000)/50000+1;
-  }
   us[RHO] = n_ISM;
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
-  us[PRS] = (g_gamma-1)*n_ISM*0.25;
+  us[PRS] = n_ISM*CONST_kB*T/1.67e-6;
 
   #if ADD_TURBULENCE == YES
   if (first_call){
     int k, input_var[200];
     for (k = 0; k< 200; k++) input_var[k] = -1;
-    input_var[0] = BX1;
-    input_var[1] = BX2;
-    input_var[2] = BX3;
-    input_var[3] = -1;
+    input_var[0] = RHO;
+    input_var[1] = BX1;
+    input_var[2] = BX2;
+    input_var[3] = BX3;         
+    input_var[4] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;
@@ -160,29 +171,43 @@ void Init (double *us, double x1, double x2, double x3)
   InputDataInterpolate(us, x1, x2, x3);  /* -- interpolate density from
                                               input data file -- */
   #endif
+/*
+  if (r > 2.5 && r <= 3)
+  {
+    us[RHO] = 60*pow(r/r_c,0.0);
+  }
+*/
 
   if (r <= r_c && r != 0)
   {
-    us[RHO] = rho_c;
-    us[VX1] = R_ej/time0*(x1/r);
-    us[VX2] = R_ej/time0*(x2/r);
-    us[VX3] = R_ej/time0*(x3/r);
-    us[PRS] = rho_c*CONST_kB*T/1.67e-6;
+    up      = 1.0 + (n-3.0)/3.0*pow(ph/l*fnc,0.5)*pow(r/R_ch,1.5);
+    down    = 1.0 + (n/3.0)*pow(ph/l*fnc,0.5)*pow(r/R_ch,1.5);
+    eta     = up/down;
+//    eta     = 1.0;
+    us[RHO] = rho_ch*fnc*pow(w_c,-n);
+    us[VX1] = (x1/t)*eta;
+    us[VX2] = (x2/t)*eta;
+    us[VX3] = (x3/t)*eta;
+    us[PRS] = rho_ch*fnc*pow(w_c,-n)*CONST_kB*T/1.67e-6;
   }
+
   if (r >  r_c && r <= R_ej)
   {
    // us[RHO] = a[(int) fabs(x1*x2*100)]*rho_c*pow(r/r_c,-n);
-    us[RHO] = rho_c*pow(r/r_c,-n);
-    us[VX1] = R_ej/time0*(x1/r)*pow(r/r_c,-s);
-    us[VX2] = R_ej/time0*(x2/r)*pow(r/r_c,-s);
-    us[VX3] = R_ej/time0*(x3/r);
-    us[PRS] = rho_c*pow(r/r_c,-n)*CONST_kB*T/1.67e-6;
+    up      = 1.0 + (n-3.0)/3.0*pow(ph/l*fnc,0.5)*pow(r/R_ch,1.5);
+    down    = 1.0 + (n/3.0)*pow(ph/l*fnc,0.5)*pow(r/R_ch,1.5);
+    eta     = up/down;
+//    eta     = 1.0;
+    us[RHO] = rho_ch*fnc*pow(r/R_ej,-n);
+    us[VX1] = (x1/t)*eta;
+    us[VX2] = (x2/t)*eta;
+    us[VX3] = (x3/t)*eta;
+    us[PRS] = rho_ch*fnc*pow(r/R_ej,-n)*CONST_kB*T/1.67e-6;
   }
 
-  //printf("%e\n",R_ej/time0);
-
-  theta = g_inputParam[THETA]*CONST_PI/180.0;
-  phi   =   g_inputParam[PHI]*CONST_PI/180.0;
+//  printf("%e\n",eta);
+  //theta = g_inputParam[THETA]*CONST_PI/180.0;
+  //phi   =   g_inputParam[PHI]*CONST_PI/180.0;
   B0    = g_inputParam[BMAG];
 
   //us[BX1] = B0*sin(theta)*cos(phi);
@@ -229,6 +254,7 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
  *
  *********************************************************************** */
 {
+/*
   static int first_call = 1;
   double theta, phi;
   static double sth,cth,sphi,cphi;

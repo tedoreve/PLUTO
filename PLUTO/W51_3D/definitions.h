@@ -1,6 +1,6 @@
 #define  PHYSICS                 MHD
-#define  DIMENSIONS              2
-#define  COMPONENTS              2
+#define  DIMENSIONS              3
+#define  COMPONENTS              3
 #define  GEOMETRY                CARTESIAN
 #define  BODY_FORCE              NO
 #define  COOLING                 NO
@@ -30,13 +30,13 @@
 #define  U_AM                    4
 #define  S_PI                    5
 #define  N_PI                    6
-#define  ETA                     7
+#define  W_C                     7
 #define  BMAG                    8
 #define  THETA                   9
 #define  PHI                     10
 #define  GAMMA                   11
 #define  Temp                    12
-#define  t0                      13
+#define  NU_VISC                 13
 
 /* [Beg] user-defined constants (do not change this line) */
 

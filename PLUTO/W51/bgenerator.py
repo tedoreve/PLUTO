@@ -96,27 +96,16 @@ def toff(f):
         print(end-start)
     return wrapper
 
+def f(i,j):
+    return i+j
+
 #@toff
 def magnetism(width):
-
-    bx1 = np.zeros([width,width])
-    bx2 = np.zeros([width,width])
-    x   = np.zeros([width,width])
-
-
-    for i in range(width):
-        for j in range(width):
-            x[i,j] = i + j
-
-    bx1  = np.rot90(x)
-    bx2  = np.rot90(x)
-    
-    bx1 = bx1.T/500000
-    bx2 = bx2.T/500000
-    
-    bx1 = np.reshape(bx1,width**2,1)
-    bx2 = np.reshape(bx2,width**2,1)
-    return bx1 , bx2
+    x = np.fromfunction(f,(width,width))
+    bx  = np.rot90(x)    
+    bx = bx.T/500000    
+    bx = np.reshape(bx,width**2,1)
+    return bx , bx
 
 
 #================================组合背景=======================================
@@ -175,7 +164,7 @@ if __name__=='__main__':
     width = 512
     index = 2.4
     u     = 1.3
-    rho_constant = 0.3*u
+    rho_constant = 0.21*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]             #number,r,index,e
     mag   = 3.2                           #widthi,widthj

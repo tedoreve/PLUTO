@@ -18,26 +18,26 @@ import time
 #    return wrapper
 #
 #@toff
-def judge(i,j,l):
-    if i+j == l:
-        return l 
+def f(i,j,k):
+    return i+j+k
 
 
 if __name__=='__main__':
     width = 512
-    x   = np.zeros([width,width])
-    p = Pool(64)
+#    x   = np.zeros([width,width,width])
+#    p = Pool(4)
     start = time.time()
-    
-    for i in range(width):
-#        print(i)
-        for j in range(width):
-            x[i,j] = i + j
+    x = np.fromfunction(f,(width,width,width))
+#    for i in range(width):
+##        print(i)
+#        for j in range(width):
+#            for k in range(width):
+#                x[i,j,k] = i + j + k
 #            for l in range(2*width):
 #                print(p.apply_async(judge, args=(i,j,l,x)).get())
 
-    p.close()
-    p.join()
+#    p.close()
+#    p.join()
     end = time.time()
     print('Total time.', end - start)
     print(x)

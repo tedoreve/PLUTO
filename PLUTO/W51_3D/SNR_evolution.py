@@ -14,39 +14,50 @@ import numpy as np
 import scipy as sc
 
 #-----------------------------初始条件------------------------------------------
-E_ej  = 1e51                                           #爆发能量erg
+E_ej  = 2e51                                           #爆发能量erg
 M_ej  = 14*con.M_sun.to('g').value                     #爆发质量g
 R_ej  = 1*con.pc.to('cm').value                        #爆发尺度cm
 B     = 1.0e-6                                         #背景磁场G
 lamda = 1.0e17                                         #最大MHD湍流波长
-n_h   = 10.0                                           #H原子密度cm^-3
+n_h   = 20.0                                           #H原子密度cm^-3
 T     = 1.0e2                                          #温度
 t     = np.linspace(1,100000,10000)                   #时间yr
 #-----------------------------参量设定------------------------------------------
 m_h   = con.m_p.to('g').value                          #H原子质量g
 e     = con.e.esu.value                                #电子电荷C
 u     = 1.3                                            #星际介质平均原子质量
-s     = 0                                              #介质密度分布幂指数
+s     = 1                                              #壳层速度分布
 gamma = 5/3                                            #绝热指数
 eta   = 3/7                                            #外部幂率区域质量比重
-n     = 9                                              #ejecta密度分布幂指数，Ia：n=7,II:n=9
+n     = 2                                              #ejecta密度分布幂指数，Ia：n=7,II:n=9
 #-----------------------------推导结果------------------------------------------
 c_s     = 9.2e5*np.sqrt(gamma*T/1.0e4)                 #当地声速cm/s
-n_ISM   = u*n_h                                        #星际介质密度cm^-3
+n_ISM   = n_h+0.3*2*n_h                                #星际介质密度cm^-3
 rho_ISM = n_ISM*m_h                                    #星际介质密度g/cm^-3
-rho_ISM = rho_ISM*(R_ej/R_ej)**(-s)                    #介质密度分布
+rho_ISM = rho_ISM                                      #介质密度分布
 rho_0   = rho_ISM                                      #R_ej处密度
-r_c     = R_ej*(1-eta*M_ej*(3-n)/(4*ma.pi*rho_0*R_ej**3))**(1/(3-n))           #内ejecta均匀介质半径
+r_c     = ((1-eta*n/3)/(1-eta))**(1/(n-3))*R_ej        #内ejecta均匀介质半径
 rho_c   = (1-eta)*M_ej/(4/3*ma.pi*r_c**3)              #内ejecta均匀介质密度
 rho_0   = rho_c*(R_ej/r_c)**(-n)                       #ejecta外边界密度
 E       = E_ej/(4/3*ma.pi*R_ej**3)                     #能量密度
-v0      = ma.sqrt(E_ej)/ma.sqrt(2*ma.pi*rho_c*r_c**5/5/R_ej**2+2*ma.pi*rho_ISM*      \
+v0      = ma.sqrt(E_ej)/ma.sqrt(2*ma.pi*rho_c*r_c**5/5/R_ej**2+2*ma.pi*rho_0*      \
           R_ej**3*(1-(R_ej/r_c)**(n-5))/(5-n))         #ejecta外边界速度
-#v0      = 1e9
 P       = n_ISM*con.k_B.to('erg/K').value*T            #压强
 t_Sed   = (3*M_ej/4/np.pi/u/m_h/n_h/v0**3)**(1/3)      #s,可用t_Sed*un.s.to('yr')
 t_Sed   = t_Sed*un.s.to('yr')
 t_Rad   = 2.7e4*(E_ej/1.0e51)**0.24*n_h**(-0.52)       #yr     
+
+C       = 2*ma.pi*r_c**n*rho_c*R_ej**(-2*s)
+
+index   = 2*s+3-n
+#E_out   = C/index*(r_c**index-R_ej**index)
+#E_inner = 2*ma.pi*rho_c*v0**2*R_ej**(-2*s)*r_c**(2*s+3)/(2*s+3)
+#print(E_out,E_inner)
+
+part1   = C/r_c**n*r_c**(2*s+3)/(2*s+3)
+part2   = C*(R_ej**index-r_c**index)/index
+v0      = E_ej**0.5*(part1+part2)**(-0.5)
+
 #------------------------------演化结果-----------------------------------------
 f       = 10                                           #粒子平均自由程/回旋半径
 Rj      = 1                                            #激波相对磁场方向
@@ -57,6 +68,7 @@ E_p=np.zeros(len(t))
 E_max1=np.zeros(len(t))
 E_max2=np.zeros(len(t))
 E_max3=np.zeros(len(t))
+
 #下面计算最大加速能量
 def fun(t,v,B,f,Rj):
     return 100*B*(v/1.0e8)**2/f/Rj
