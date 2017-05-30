@@ -97,15 +97,16 @@ def toff(f):
     return wrapper
 
 def f(i,j,k):
-    return i+j+k
+    return i+j
 
 #@toff
 def magnetism(width):
     x = np.fromfunction(f,(width,width,width))/500000
-#    bx  = np.rot90(x)    
-#    bx = bx.T/500000    
-    bx = np.reshape(x,width**3,1)
-    return bx, bx, bx
+    x = np.rot90(x,k=1)
+    x = np.transpose(x)
+    x = np.reshape(x,width**3,1)
+    x = x + 0.001
+    return x*0, x, x
 
 
 #================================组合背景=======================================
@@ -114,7 +115,13 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
     #密度
     pcdata = 1/np.random.power(index,[width,width,width])*rho_constant
 #    pcdata = np.zeros([width,width,width])+rho_constant
+    for k in range(width):
+        for j in range(width):
+            for i in range(width):
+                if (i-width/2)**2+(j-width/2)**2+(k-20)**2 < (width/9)**2:
+                    pcdata[k,j,i] = 20
     rho    = np.reshape(pcdata,width**3,1)
+    
     if 'bg' in components:
         pcdata    = density(infilename,width,rho_constant)
         rho       = np.reshape(pcdata,width**2,1)
@@ -132,15 +139,12 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     #磁场
     if 'mag' in components:
-        bx1 , bx2 , bx3 = magnetism(width)
-        bx1 = (bx1 + 0.001)*mag
-        bx2 = (bx2 + 0.001)*mag
-        bx3 = (bx3 + 0.001)*mag
+        bx1 , bx2 , bx3 = np.array(magnetism(width))*mag
         total = np.concatenate((rho,bx1,bx2,bx3))
 #
     total     = total.astype(float)
     total.tofile(outfilename)
-    return bx1, bx2, bx3
+    return pcdata, 
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -165,14 +169,14 @@ def grid(outfilename,ra,width):
 #==============================================================================
 if __name__=='__main__':
     print('开始原初构建！！！')
-    width = 256
+    width = 128
     index = 2.4
     u     = 1.3
     rho_constant = 0.21*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]             #number,r,index,e
     mag   = 3.2                           #widthi,widthj
-    b1,b2,b3 = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
+    pcdata = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
     grid('grid0.out',37.5,width)
     print(ti.asctime())
     

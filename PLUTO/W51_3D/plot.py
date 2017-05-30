@@ -1,5 +1,3 @@
-import os
-import sys
 import numpy as np
 import matplotlib as mpl
 mpl.use('Agg')   # generate postscript output by default
@@ -8,6 +6,7 @@ import matplotlib.pylab as plb
 import pyPLUTO as pp
 import scipy.ndimage as nd
 from matplotlib.ticker import ScalarFormatter
+from mayavi import mlab
 
 def single(ty,t,E,rho,sigma,wdir):
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
@@ -114,6 +113,43 @@ def temp(wdir):
                 cbar=(True,'vertical'))
 #    savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
     plt.show()
+
+def td(ty,t,E,rho,sigma,wdir):
+    D = pp.pload(t/2000-1,w_dir=wdir)   
+    
+#    for k in range(D.rho.shape[2]):
+#        for j in range(D.rho.shape[1]):
+#            for i in range(D.rho.shape[0]):
+##                if (i-D.rho.shape[0]/2)**2+(j-D.rho.shape[1]/2)**2+(k-D.rho.shape[2]/2)**2 > 30**2:
+##                    D.rho[k,j,i] = rho
+#                if D.rho[k,j,i] > 10:
+#                    D.rho[k,j,i] = rho
+#    
+#    flux = D.rho*(D.bx1**2+D.bx2**2+D.bx3**2)**1.25*(D.vx1**2+D.vx2**2+D.vx3**2)**0
+#    flux = (flux-np.mean(flux))*1+np.mean(flux)*1
+#    flux = flux.sum(axis=0)
+##    flux = nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
+#    if ty == 'flux':
+#        fig = plt.figure(figsize=(7,6))
+#        ax = fig.add_subplot(111)
+#        neg = ax.imshow(np.log10(flux).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
+#        levels = np.arange(-5.5, -4, 0.5)
+#        plt.contour(np.log10(flux).T, levels,
+#                     origin='lower',
+#                     linewidths=2,
+#                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
+#        cbar = fig.colorbar(neg,ax=ax)
+#        cbar.set_label(r'log(S)')
+#        ax.set_xlabel('l offset (pc)')
+#        ax.set_ylabel('b offset (pc)')
+#        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
+#        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
+#        fig.savefig('t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps')
+    
+
+    mlab.pipeline.volume(mlab.pipeline.scalar_field(D.rho,cmap='hot'))
+#    mlab.outline()
+    
 #==================================main========================================  
 if __name__=='__main__':   
     #font = {'family' : 'serif',  
@@ -123,7 +159,7 @@ if __name__=='__main__':
     
     choose = 'single' #single or multiple or temp
     ty     = 'flux'    
-    t      = 18000   
+    t      = 20000   
     E      = 1.3
     rho    = 0.21
     sigma  = 14
@@ -131,4 +167,5 @@ if __name__=='__main__':
     wdir = './'
     nlinf = pp.nlast_info(w_dir=wdir)
 #    single(ty,t,E,rho,sigma,wdir)
-    analyze(ty,t,E,rho,sigma,wdir)
+#    analyze(ty,t,E,rho,sigma,wdir)
+    td(ty,t,E,rho,sigma,wdir)
