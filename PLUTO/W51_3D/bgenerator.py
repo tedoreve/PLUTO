@@ -114,12 +114,13 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     #密度
     pcdata = 1/np.random.power(index,[width,width,width])*rho_constant
+    pcdata = pcdata*rho_constant/np.mean(pcdata)
 #    pcdata = np.zeros([width,width,width])+rho_constant
     for k in range(width):
         for j in range(width):
             for i in range(width):
-                if (i-width/2)**2+(j-width/2)**2+(k-20)**2 < (width/9)**2:
-                    pcdata[k,j,i] = 20
+                if (i-90)**2+(j-width/2)**2+(k-90)**2 < (width/14)**2:
+                    pcdata[k,j,i] = 2
     rho    = np.reshape(pcdata,width**3,1)
     
     if 'bg' in components:
@@ -144,7 +145,7 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 #
     total     = total.astype(float)
     total.tofile(outfilename)
-    return pcdata, 
+    return rho 
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
