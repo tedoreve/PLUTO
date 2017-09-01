@@ -1,0 +1,27 @@
+          定义的参量               数值备注       真正在程序中用的值       CGS单位               简略单位
+#define  UNIT_DENSITY            1 CONST_mp           1.67e-24           g     cm^-3
+#define  UNIT_LENGTH             1 CONST_pc           3.09e18                  cm
+#define  UNIT_VELOCITY           1 CONST_c            3.00e10                  cm      s^-1
+         UNIT_B                                       0.14               g^0.5 cm^-0.5 s^-1      G
+         UNIT_t               3.26 years              1.03e8                           s
+         UNIT_P                                       1.50e-3            g     cm^-1   s^-2      Ba=0.1Pa
+         UNIT_e                                       4.42e52            g     cm^2    s^-2      erg
+         UNIT_M                                       4.93e31            g
+
+          定义的参量               数值备注       真正在程序中用的值       CGS单位               简略单位
+#define  UNIT_DENSITY            1 CONST_mp           1.67e-24           g     cm^-3     
+#define  UNIT_LENGTH             1 CONST_pc           3.09e18                  cm
+#define  UNIT_VELOCITY          10000 km/s            1.00e9                   cm      s^-1
+         UNIT_B                                       4.58e-3            g^0.5 cm^-0.5 s^-1      G
+         UNIT_t                 98 years              3.09e9                           s
+         UNIT_P                                       1.67e-6            g     cm^-1   s^-2      Ba=0.1Pa
+         UNIT_e                                       4.93e49            g     cm^2    s^-2      erg
+         UNIT_M                                       4.93e31            g
+
+    T1=2.7d0
+    u1=2.5d-1
+    key1=1
+    nISM=10
+    B1=5.0e-6
+    Ee_max=30000.0
+    Ep_max=30000.0

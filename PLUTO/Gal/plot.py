@@ -1,12 +1,13 @@
+import os
+import sys
 import numpy as np
-#import matplotlib as mpl
-#mpl.use('Agg')   # generate postscript output by default
+import matplotlib as mpl
+mpl.use('Agg')   # generate postscript output by default
 import matplotlib.pyplot as plt
-#import matplotlib.pylab as plb
+import matplotlib.pylab as plb
 import pyPLUTO as pp
 import scipy.ndimage as nd
-#from matplotlib.ticker import ScalarFormatter
-from mayavi import mlab
+from matplotlib.ticker import ScalarFormatter
 
 def single(ty,t,E,rho,sigma,wdir):
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
@@ -113,72 +114,6 @@ def temp(wdir):
                 cbar=(True,'vertical'))
 #    savefig('MHD_Blast.png') # Only to be saved as either .png or .jpg
     plt.show()
-
-def td(ty,t,E,rho,sigma,wdir):
-    D = pp.pload(t/2000-1,w_dir=wdir)   
-    if ty == 'flux':
-        for k in range(D.rho.shape[2]):
-            for j in range(D.rho.shape[1]):
-                for i in range(D.rho.shape[0]):
-    #                if (i-D.rho.shape[0]/2)**2+(j-D.rho.shape[1]/2)**2+(k-D.rho.shape[2]/2)**2 > 30**2:
-    #                    D.rho[k,j,i] = rho
-                    if D.rho[k,j,i] > 10:
-                        D.rho[k,j,i] = rho
-        
-        flux = D.rho*(D.bx1**2+D.bx2**2+D.bx3**2)**1.25*(D.vx1**2+D.vx2**2+D.vx3**2)**0
-        flux = (flux-np.mean(flux))*1+np.mean(flux)*1
-        flux = flux.sum(axis=0)
-        flux = nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
-
-        fig = plt.figure(figsize=(7,6))
-        ax = fig.add_subplot(111)
-        neg = ax.imshow(np.log10(flux).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
-        levels = np.arange(-5.5, -4, 0.5)
-        plt.contour(np.log10(flux).T, levels,
-                     origin='lower',
-                     linewidths=2,
-                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
-        cbar = fig.colorbar(neg,ax=ax)
-        cbar.set_label(r'log(S)')
-        ax.set_xlabel('l offset (pc)')
-        ax.set_ylabel('b offset (pc)')
-        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
-        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
-        fig.savefig('t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps')
-        fig.clear()
-        ax = fig.add_subplot(111)
-        ax.plot((np.rot90(np.eye(len(flux)))*flux.T).sum(axis=0))
-        ax.set_xlim(0,256)
-        fig.savefig('change.eps')
-        
-    elif ty == 'rho':
-        fig = plt.figure(figsize=(7,6))
-        ax = fig.add_subplot(111)
-        neg = ax.imshow(np.log10(D.rho[:,:,128]).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
-        cbar = fig.colorbar(neg,ax=ax)
-        cbar.set_label(r'log($\mathregular{\rho/cm^{-3}}$)')
-        ax.set_xlabel('l offset (pc)')
-        ax.set_ylabel('b offset (pc)')
-        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
-        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
-        T = pp.Tools()
-        newdims = 2*(20,)
-        Xmesh, Ymesh = np.meshgrid(D.x2.T,D.x3.T)
-        xcong = T.congrid(Xmesh,newdims,method='linear')
-        ycong = T.congrid(Ymesh,newdims,method='linear')
-        velxcong = T.congrid(D.bx2[:,:,128].T,newdims,method='linear')
-        velycong = T.congrid(D.bx3[:,:,128].T,newdims,method='linear')
-        plt.gca().quiver(xcong, ycong, velxcong, velycong,color='w')
-        plt.show()
-        fig.savefig('rho-t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
-    #    close()
-    else:   
-        mlab.pipeline.volume(mlab.pipeline.scalar_field(D.rho,cmap='hot'))
-    #    mlab.quiver3d(D.bx1, D.bx2, D.bx3)
-    #    src = mlab.pipeline.vector_field(D.bx1, D.bx2, D.bx3)
-    #    mlab.pipeline.vectors(src, mask_points=20000, scale_factor=30.)
-    #    mlab.outline()
-    
 #==================================main========================================  
 if __name__=='__main__':   
     #font = {'family' : 'serif',  
@@ -187,14 +122,13 @@ if __name__=='__main__':
     #        }  
     
     choose = 'single' #single or multiple or temp
-    ty     = 'rho'    
-    t      = 2000  
+    ty     = 'flux'    
+    t      = 18000   
     E      = 1.3
     rho    = 0.21
-    sigma  = 4
+    sigma  = 14
     
     wdir = './'
     nlinf = pp.nlast_info(w_dir=wdir)
 #    single(ty,t,E,rho,sigma,wdir)
-#    analyze(ty,t,E,rho,sigma,wdir)
-    td(ty,t,E,rho,sigma,wdir)
+    analyze(ty,t,E,rho,sigma,wdir)

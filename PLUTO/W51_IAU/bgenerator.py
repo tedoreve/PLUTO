@@ -96,33 +96,25 @@ def toff(f):
         print(end-start)
     return wrapper
 
-def f(i,j,k):
-    return i*2+j*2
+def f(i,j):
+    return i+j
 
 #@toff
 def magnetism(width):
-    x = np.fromfunction(f,(width,width,width))/500000
-    x = np.rot90(x,k=1)
-    x = np.transpose(x)
-    x = np.reshape(x,width**3,1)
-    x = x + 0.001
-    return x*0, x, x
+    x = np.fromfunction(f,(width,width))
+    bx  = np.rot90(x)    
+    bx = bx.T/500000    
+    bx = np.reshape(bx,width**2,1)
+    return bx , bx
 
 
 #================================组合背景=======================================
 def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,mag):
 
     #密度
-    pcdata = 1/np.random.power(index,[width,width,width])*rho_constant
-    pcdata = pcdata*rho_constant/np.mean(pcdata)
-#    pcdata = np.zeros([width,width,width])+rho_constant
-    for k in range(width):
-        for j in range(width):
-            for i in range(width):
-                if (i-180)**2+(j-width/2)**2+(k-180)**2 < (width/14)**2:
-                    pcdata[k,j,i] = 2
-    rho    = np.reshape(pcdata,width**3,1)
-    
+#    pcdata = 1/np.random.power(index,[width,width])*rho_constant
+    pcdata = np.zeros([width,width])+rho_constant
+    rho    = np.reshape(pcdata,width**2,1)/np.mean(pcdata)*rho_constant
     if 'bg' in components:
         pcdata    = density(infilename,width,rho_constant)
         rho       = np.reshape(pcdata,width**2,1)
@@ -140,12 +132,14 @@ def combine(components,infilename,outfilename,width,index,rho_constant,sw,clump,
 
     #磁场
     if 'mag' in components:
-        bx1 , bx2 , bx3 = np.array(magnetism(width))*mag
-        total = np.concatenate((rho,bx1,bx2,bx3))
-#
+        bx1 , bx2 = magnetism(width)
+        bx1 = (bx1 + 0.001)*mag
+        bx2 = (bx2 + 0.001)*mag
+        total     = np.concatenate((rho,bx1,bx2))
+
     total     = total.astype(float)
     total.tofile(outfilename)
-    return rho 
+    return rho
 #================================网格定义=======================================
 def grid(outfilename,ra,width):
 
@@ -159,25 +153,22 @@ def grid(outfilename,ra,width):
     f.write(str(len(b)-1)+'\n')
     for i in range(len(c)):
         f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
-    f.write(str(len(b)-1)+'\n')
-    for i in range(len(c)):
-        f.write(str(int(c[i]))+'  '+str(b[i])+'  '+str(b[i+1])+'\n')
-#    f.write('1\n')
-#    f.write('1 0.0 1.0')
+    f.write('1\n')
+    f.write('1 0.0 1.0')
     f.close()
     return '空间构造完成！！！'
 
 #==============================================================================
 if __name__=='__main__':
     print('开始原初构建！！！')
-    width = 256
+    width = 512
     index = 2.4
     u     = 1.3
-    rho_constant = 0.21*u
+    rho_constant = 2*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r
     clump = [200,10,1.0,50.0]             #number,r,index,e
     mag   = 3.2                           #widthi,widthj
-    pcdata = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
+    b = combine(['mag'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)
     grid('grid0.out',37.5,width)
     print(ti.asctime())
     
