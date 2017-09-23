@@ -1,12 +1,29 @@
 import numpy as np
-#import matplotlib as mpl
-#mpl.use('Agg')   # generate postscript output by default
+import matplotlib as mpl
+mpl.use('Agg')   # generate postscript output by default
 import matplotlib.pyplot as plt
 #import matplotlib.pylab as plb
 import pyPLUTO as pp
 import scipy.ndimage as nd
 #from matplotlib.ticker import ScalarFormatter
 from mayavi import mlab
+from matplotlib.colors import Normalize
+from tvtk.util.ctf import ColorTransferFunction
+from tvtk.util.ctf import PiecewiseFunction
+
+
+#class MidpointNormalize(Normalize):
+#    def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
+#        self.midpoint = midpoint
+#        Normalize.__init__(self, vmin, vmax, clip)
+#
+#    def __call__(self, value, clip=None):
+#        # I'm ignoring masked values and all kinds of edge cases to make a
+#        # simple example...
+#        x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
+#        return np.ma.masked_array(np.interp(value, x, y))
+#norm = MidpointNormalize(midpoint=0)
+norm = Normalize(vmin=-3.5, vmax=-1.9)  
 
 def single(ty,t,E,rho,sigma,wdir):
     #D = pp.pload(nlinf['nlast'],w_dir=wdir) # Loading the data into a pload object D
@@ -115,7 +132,7 @@ def temp(wdir):
     plt.show()
 
 def td(ty,t,E,rho,sigma,wdir):
-    D = pp.pload(t/2000-1,w_dir=wdir)   
+    D = pp.pload(t,w_dir=wdir)   
     if ty == 'flux':
         for k in range(D.rho.shape[2]):
             for j in range(D.rho.shape[1]):
@@ -144,7 +161,7 @@ def td(ty,t,E,rho,sigma,wdir):
         ax.set_ylabel('b offset (pc)')
         ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
         fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
-        fig.savefig('t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps')
+        fig.savefig('t'+str(t)+'_density'+str(rho)+'_E'+str(E)+'.eps')
         fig.clear()
         ax = fig.add_subplot(111)
         ax.plot((np.rot90(np.eye(len(flux)))*flux.T).sum(axis=0))
@@ -152,13 +169,14 @@ def td(ty,t,E,rho,sigma,wdir):
         fig.savefig('change.eps')
         
     elif ty == 'rho':
+#        t = 850
         fig = plt.figure(figsize=(7,6))
         ax = fig.add_subplot(111)
         neg = ax.imshow(np.log10(D.rho[:,:,128]).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
         cbar = fig.colorbar(neg,ax=ax)
         cbar.set_label(r'log($\mathregular{\rho/cm^{-3}}$)')
-        ax.set_xlabel('l offset (pc)')
-        ax.set_ylabel('b offset (pc)')
+        ax.set_xlabel('x offset (pc)')
+        ax.set_ylabel('y offset (pc)')
         ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
         fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
         T = pp.Tools()
@@ -166,18 +184,39 @@ def td(ty,t,E,rho,sigma,wdir):
         Xmesh, Ymesh = np.meshgrid(D.x2.T,D.x3.T)
         xcong = T.congrid(Xmesh,newdims,method='linear')
         ycong = T.congrid(Ymesh,newdims,method='linear')
-        velxcong = T.congrid(D.bx2[:,:,128].T,newdims,method='linear')
-        velycong = T.congrid(D.bx3[:,:,128].T,newdims,method='linear')
+        velxcong = T.congrid(D.bx1[:,:,128].T,newdims,method='linear')
+        velycong = T.congrid(D.bx2[:,:,128].T,newdims,method='linear')
         plt.gca().quiver(xcong, ycong, velxcong, velycong,color='w')
         plt.show()
-        fig.savefig('rho-t='+str(t)+' density='+str(rho)+' E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
+        fig.savefig('rho-t='+str(t)+'_density='+str(rho)+'_E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
     #    close()
-    else:   
-        mlab.pipeline.volume(mlab.pipeline.scalar_field(D.rho,cmap='hot'))
+    else: 
+        print(D.x1.shape)
+#        arr = np.meshgrid(D.x1,D.x2,D.x3)
+#        mlab.points3d(arr[0][0:256:8,0:256:8,0:256:8], arr[1][0:256:8,0:256:8,0:256:8], arr[2][0:256:8,0:256:8,0:256:8], D.rho[0:256:8,0:256:8,0:256:8])
+        vol = mlab.pipeline.volume(mlab.pipeline.scalar_field(np.log10(D.prs*D.rho)))
+        ctf = ColorTransferFunction()
+        ctf.add_hsv_point(-8, 0.8, 1, 1)
+        ctf.add_hsv_point(-6.5, 0.45, 1, 1)
+        ctf.add_hsv_point(-5.4, 0.15, 1, 1)
+
+        vol._volume_property.set_color(ctf)
+        vol._ctf = ctf
+        vol.update_ctf = True
+        otf = PiecewiseFunction()
+
+        otf.add_point(-8, 0)
+        otf.add_point(-5.7, 0.082)
+        otf.add_point(-5.4, 0.0)
+
+        vol._otf = otf
+        vol._volume_property.set_scalar_opacity(otf)
+#        mlab.contour3d(D.prs)
     #    mlab.quiver3d(D.bx1, D.bx2, D.bx3)
     #    src = mlab.pipeline.vector_field(D.bx1, D.bx2, D.bx3)
     #    mlab.pipeline.vectors(src, mask_points=20000, scale_factor=30.)
     #    mlab.outline()
+#        mlab.savefig(str(t)+'.obj')
     
 #==================================main========================================  
 if __name__=='__main__':   
@@ -187,8 +226,8 @@ if __name__=='__main__':
     #        }  
     
     choose = 'single' #single or multiple or temp
-    ty     = 'rho'    
-    t      = 2000  
+    ty     = 'flu'    
+    t      = 50 
     E      = 1.3
     rho    = 0.21
     sigma  = 4

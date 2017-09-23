@@ -171,7 +171,7 @@ def grid(outfilename,ra,width):
 if __name__=='__main__':
     print('开始原初构建！！！')
     width = 256
-    index = 2.4
+    index = 1.0         
     u     = 1.3
     rho_constant = 0.21*u
     sw    = ['../Stellar_Wind/',10,20]    #wdir,number,r

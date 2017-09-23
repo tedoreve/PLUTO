@@ -160,7 +160,10 @@ void Init (double *us, double x1, double x2, double x3)
     int k, input_var[200];
     for (k = 0; k< 200; k++) input_var[k] = -1;
     input_var[0] = RHO;
-    input_var[1] = -1;
+    input_var[1] = BX1;
+    input_var[2] = BX2;
+    input_var[3] = BX3;         
+    input_var[4] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;
@@ -184,7 +187,7 @@ void Init (double *us, double x1, double x2, double x3)
     us[RHO] = rho_ch*fnc*pow(w_c,-n);
     us[VX1] = (x1/t)*eta;
     us[VX2] = (x2/t)*eta;
-    us[VX3] = (fabs(x3)/r)*eta;
+    us[VX3] = (x3/t)*eta;
     us[PRS] = rho_ch*fnc*pow(w_c,-n)*CONST_kB*T/1.67e-6;
   }
 
@@ -198,7 +201,7 @@ void Init (double *us, double x1, double x2, double x3)
     us[RHO] = rho_ch*fnc*pow(r/R_ej,-n);
     us[VX1] = (x1/t)*eta;
     us[VX2] = (x2/t)*eta;
-    us[VX3] = (fabs(x3)/t)*eta;
+    us[VX3] = (x3/t)*eta;
     us[PRS] = rho_ch*fnc*pow(r/R_ej,-n)*CONST_kB*T/1.67e-6;
   }
 
@@ -209,7 +212,7 @@ void Init (double *us, double x1, double x2, double x3)
 
   //us[BX1] = B0*sin(theta)*cos(phi);
   //us[BX2] = B0*sin(theta)*sin(phi);
-  us[BX3] = 0.0;
+  //us[BX3] = 0.0;
 
   #if GEOMETRY == CARTESIAN
    us[AX1] = 0.0;
@@ -235,13 +238,16 @@ double BodyForcePotential(double x1, double x2, double x3)
  *
  *
  *************************************************************************** */
-{
+{   
+	double M_star, G;
+	G = 1.0e-12;
+	M_star  = g_inputParam[M_STAR];       //中子星质量
 	#if GEOMETRY == CARTESIAN
-	return -1.0/sqrt(x1*x1 + x2*x2 + x3*x3);
+	return -G*M_star/sqrt(x1*x1+x2*x2+x3*x3);
 	#elif GEOMETRY == CYLINDRICAL
-	return -1.0/sqrt(x1*x1 + x2*x2);
+	return -G*M_star/sqrt(x1*x1+x2*x2);
 	#elif GEOMETRY == SPHERICAL
-	return -1.0/x1;
+	return -G*M_star/x1;
 	#endif
 }
 #endif

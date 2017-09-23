@@ -17,6 +17,7 @@
          UNIT_P                                       1.67e-6            g     cm^-1   s^-2      Ba=0.1Pa
          UNIT_e                                       4.93e49            g     cm^2    s^-2      erg
          UNIT_M                                       4.93e31            g
+		 UNIT_G                  1 CONST_G            6.6726e-8          g^-1  cm^3    s^-2
 
     T1=2.7d0
     u1=2.5d-1
