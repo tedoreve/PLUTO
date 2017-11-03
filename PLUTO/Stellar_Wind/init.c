@@ -64,12 +64,19 @@ void Init (double *us, double x1, double x2, double x3)
    us[VX1] = 0.0;
    us[VX2] = 0.0;
    us[VX3] = -g_inputParam[V_CSM];
+   us[BX1] = 0.0;
+   us[BX2] = 0.0;
+   us[BX3] = 0.01;
   #elif GEOMETRY == CYLINDRICAL
    us[VX1] = 0.0;
    us[VX2] = -g_inputParam[V_CSM];
+   us[BX1] = 0.0;
+   us[BX2] = 0.01;
   #elif GEOMETRY == SPHERICAL
    us[VX1] =  g_inputParam[V_CSM]*cos(x2);
    us[VX2] = -g_inputParam[V_CSM]*sin(x2);
+   us[BX1] = 0.0;
+   us[BX2] = 0.0;
   #endif
 
   R = sqrt(x1*x1 + x2*x2);

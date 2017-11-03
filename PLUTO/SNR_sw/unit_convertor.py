@@ -1,7 +1,6 @@
 from astropy import units as un
 from astropy import constants as con
 import numpy as np
-import matplotlib.pyplot as plt
 #          定义的参量               数值备注       真正在程序中用的值       CGS单位               简略单位
 ##define  UNIT_DENSITY            1 CONST_mp           1.67e-24           g     cm^-3     
 ##define  UNIT_LENGTH             1 CONST_pc           3.09e18                  cm
@@ -11,23 +10,30 @@ import matplotlib.pyplot as plt
 #         UNIT_P                                       1.67e-6            g     cm^-1   s^-2      Ba=0.1Pa
 #         UNIT_e                                       4.93e49            g     cm^2    s^-2      erg
 #         UNIT_M                                       4.93e31            g
-UNIT_DENSITY = 1*un.M_p
+#	    UNIT_G                  1 CONST_G            6.6726e-8          g^-1  cm^3    s^-2
+UNIT_DENSITY = 1*con.m_p/un.cm**3
 UNIT_LENGTH  = 1*un.pc
 UNIT_VELOCITY= 1e4*un.km/un.s
-UNIT_B = 4.58e3*un.uG
-UNIT_t = 98*un.yr
-UNIT_P = 1.67e-6*un.Ba
-UNIT_E = 4.93e49*un.erg
-UNIT_M = 2.48e-2*con.M_sun
+UNIT_B = (UNIT_VELOCITY*np.sqrt(4*np.pi*UNIT_DENSITY)).to(un.g**0.5*un.cm**-0.5*un.s**-1).value*un.G
+UNIT_t = UNIT_LENGTH/UNIT_VELOCITY
+UNIT_P = UNIT_DENSITY*UNIT_VELOCITY**2
+UNIT_M = UNIT_DENSITY*UNIT_LENGTH**3
+UNIT_E = UNIT_M*UNIT_VELOCITY**2
+#UNIT_B = ((UNIT_E/UNIT_LENGTH**3)**0.5).value*un.G
+UNIT_NU= UNIT_P*UNIT_t
+UNIT_G = (UNIT_VELOCITY/UNIT_LENGTH)**2/UNIT_DENSITY
 
-n   = 1*un.M_p
-l   = 1*un.pc
-v   = 6000*un.km/un.s
+n   = 0.21*con.m_p/un.cm**3
+l   = 4*un.pc
+v   = 490*un.km/un.s
 B   = 9*un.uG
-t   = 100*un.yr
+t   = 1000*un.yr
 P   = 1*un.Ba
-E   = 1e51*un.erg
-M   = 14*con.M_sun
+E_th= 0.96*un.erg
+E   = 1.0e51*un.erg
+M   = 11*con.M_sun
+nu  = 2*un.uPa*un.s
+G   = 1*con.G
 
 n   /= UNIT_DENSITY
 l   /= UNIT_LENGTH
@@ -37,20 +43,18 @@ t   /= UNIT_t
 P   /= UNIT_P
 E   /= UNIT_E
 M   /= UNIT_M
+nu  /= UNIT_NU
+G   /= UNIT_G
 
-#print('n = ', n, '\n'
-#      'l = ', l, '\n'
-#      'v = ', v, '\n'
-#      'B = ', B, '\n'
-#      't = ', t, '\n'
-#      'P = ', P, '\n'
-#      'E = ', E, '\n'
-#      'M = ', M, '\n')
+print('n = ', n.to('').value, '\n'
+      'l = ', l.to('').value, '\n'
+      'v = ', v.to('').value, '\n'
+      'B = ', B.to('').value, '\n'
+      't = ', t.to('').value, '\n'
+      'P = ', P.to('').value, '\n'
+      'E = ', E.to('').value, '\n'
+      'M = ', M.to('').value, '\n'
+      'nu = ', nu.to('').value, '\n'
+      'G = ', G.to('').value, '\n'
+      )
 
-def g(x,u,o1,o2):
-    return np.exp(-0.5*((x-u)/((np.arctan(x-u)+np.pi)/2/np.pi*(o2-o1)+o1))**2)
-x=np.linspace(1,300,100)
-o1=50
-o2=1
-u=200
-plt.plot(x,g(x,u,o1,o2))  
