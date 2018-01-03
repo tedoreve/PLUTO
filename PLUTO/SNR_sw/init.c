@@ -157,13 +157,16 @@ void Init (double *us, double x1, double x2, double x3)
 
   #if ADD_TURBULENCE == YES
   if (first_call){
-    int k, input_var[200];
-    for (k = 0; k< 200; k++) input_var[k] = -1;
+    int k, input_var[256];
+    for (k = 0; k< 256; k++) input_var[k] = -1;
     input_var[0] = RHO;
     input_var[1] = BX1;
     input_var[2] = BX2;
-    input_var[3] = BX3;         
-    input_var[4] = -1;
+    input_var[3] = BX3;        
+    input_var[4] = VX1;
+    input_var[5] = VX2;
+    input_var[6] = VX3;    
+    input_var[7] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;

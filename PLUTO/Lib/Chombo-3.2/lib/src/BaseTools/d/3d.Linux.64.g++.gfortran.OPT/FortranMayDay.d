@@ -1,0 +1,6 @@
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : BaseNamespaceHeader.H
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : FortranMayDay.cpp
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : MayDay.H
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : BaseNamespaceFooter.H
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : CHOMBO_VERSION.H
+/mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib/src/BaseTools/../../libbasetools3d.Linux.64.g++.gfortran.OPT.a(FortranMayDay.o) d/3d.Linux.64.g++.gfortran.OPT/FortranMayDay.d : FortranNameMacro.H

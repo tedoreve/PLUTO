@@ -1,0 +1,214 @@
+
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+  USER:             lingzhi
+  SYSTEM_NAME:      Linux
+  NODE_NAME:        lingzhi-Lenovo
+  ARCH:             x86_64
+  BYTE_ORDER:       little
+
+> Local time:       Tue Oct 31 23:38:09 2017
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       2
+  COMPONENTS:       2
+  GEOMETRY:         Cylindrical
+  BODY_FORCE:       NO
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        4
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         NO
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    1     0.0       256     u    10.0
+  | X2-grid    1    -10.0      512     u    10.0
+  | X3-grid    1     0.0       1       u    1.0
+  | 
+  | [Chombo Refinement]
+  | 
+  | Levels           4
+  | Ref_ratio        2 2 2 2 2 
+  | Regrid_interval  2 2 2 2 
+  | Refine_thresh    0.3
+  | Tag_buffer_size  3
+  | Block_factor     8
+  | Max_grid_size    64
+  | Fill_ratio       0.75
+  | 
+  | [Time]
+  | 
+  | CFL              0.4
+  | CFL_max_var      1.1
+  | tstart           0.0
+  | #tstop            0.070
+  | tstop            20.0
+  | first_dt         1.e-6
+  | 
+  | [Solver]
+  | 
+  | Solver        hll 
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        outflow
+  | X2-beg        outflow
+  | X2-end        userdef
+  | X3-beg        outflow
+  | X3-end        outflow
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | dbl       -1.0  -1       single_file
+  | flt       -1.0  -1       single_file
+  | vtk       -1.0  -1       single_file
+  | dbl.h5     5.0  -1
+  | tab       -1.0    -1     
+  | ppm       -1.0    -1   
+  | png       -1.0    -1
+  | log        10
+  | analysis  -1.0    -1
+  | 
+  | [Chombo HDF5 output]
+  | 
+  | Checkpoint_interval  -1.0  0
+  | Plot_interval         1.0  0 
+  | 
+  | [Parameters]
+  | 
+  | CS_WIND              0.03  
+  | RHO_AMB              1.0  
+  | CS_AMB               0.004  
+  | V_CSM                0.0  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.000000,  10.000000], 256 point(s), 2 ghosts
+  X2: [-10.000000,  10.000000], 512 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       1.496e+13 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         1.496e+08 (sec), 4.744e+00 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    256 X 512
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl.h5) to disk...! WriteData: HDF5 library not available
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-06 ; 0 % ; [0.000000, 0]
+step:10 ; t = 1.5937e-05 ; dt = 2.5937e-06 ; 0 % ; [0.375931, 0]
+step:20 ; t = 5.7275e-05 ; dt = 6.7275e-06 ; 0 % ; [0.375930, 0]
+step:30 ; t = 1.6449e-04 ; dt = 1.7449e-05 ; 0 % ; [0.375929, 0]
+step:40 ; t = 4.4259e-04 ; dt = 4.5259e-05 ; 0 % ; [0.375925, 0]
+step:50 ; t = 1.1639e-03 ; dt = 1.1739e-04 ; 0 % ; [0.375914, 0]
+step:60 ; t = 3.0348e-03 ; dt = 3.0448e-04 ; 0 % ; [0.375886, 0]
+step:70 ; t = 7.8875e-03 ; dt = 7.8975e-04 ; 0 % ; [0.375813, 0]
+step:80 ; t = 2.0474e-02 ; dt = 2.0484e-03 ; 0 % ; [0.375614, 0]
+step:90 ; t = 5.3120e-02 ; dt = 5.3130e-03 ; 0 % ; [0.375336, 0]
+step:100 ; t = 1.3780e-01 ; dt = 1.3781e-02 ; 0 % ; [0.376936, 0]
+step:110 ; t = 3.5742e-01 ; dt = 3.5467e-02 ; 1 % ; [0.420106, 0]
+step:120 ; t = 7.1209e-01 ; dt = 3.5467e-02 ; 3 % ; [0.504042, 0]
+step:130 ; t = 1.0668e+00 ; dt = 3.5467e-02 ; 5 % ; [0.713692, 0]
+step:140 ; t = 1.4214e+00 ; dt = 3.5467e-02 ; 7 % ; [0.782832, 0]
+step:150 ; t = 1.7761e+00 ; dt = 3.5467e-02 ; 8 % ; [0.829548, 0]
+step:160 ; t = 2.1308e+00 ; dt = 3.5467e-02 ; 10 % ; [0.856564, 0]
+step:170 ; t = 2.4854e+00 ; dt = 3.5467e-02 ; 12 % ; [0.881009, 0]
+step:180 ; t = 2.8401e+00 ; dt = 3.5467e-02 ; 14 % ; [0.898720, 0]
+step:190 ; t = 3.1948e+00 ; dt = 3.5467e-02 ; 15 % ; [0.904925, 0]
+step:200 ; t = 3.5494e+00 ; dt = 3.5467e-02 ; 17 % ; [0.918173, 0]
+step:210 ; t = 3.9041e+00 ; dt = 3.5467e-02 ; 19 % ; [0.922125, 0]
+step:220 ; t = 4.2588e+00 ; dt = 3.5467e-02 ; 21 % ; [0.916034, 0]
+step:230 ; t = 4.6135e+00 ; dt = 3.5467e-02 ; 23 % ; [0.901687, 0]
+step:240 ; t = 4.9681e+00 ; dt = 3.5467e-02 ; 24 % ; [0.926905, 0]
+> Writing file #1 (dbl.h5) to disk...! WriteData: HDF5 library not available
+step:250 ; t = 5.3228e+00 ; dt = 3.5467e-02 ; 26 % ; [0.942020, 0]
+step:260 ; t = 5.6775e+00 ; dt = 3.5467e-02 ; 28 % ; [0.945586, 0]
+step:270 ; t = 6.0321e+00 ; dt = 3.5467e-02 ; 30 % ; [0.924077, 0]
+step:280 ; t = 6.3868e+00 ; dt = 3.5467e-02 ; 31 % ; [0.934415, 0]
+step:290 ; t = 6.7415e+00 ; dt = 3.5467e-02 ; 33 % ; [0.960709, 0]
+step:300 ; t = 7.0961e+00 ; dt = 3.5467e-02 ; 35 % ; [0.973539, 0]
+step:310 ; t = 7.4508e+00 ; dt = 3.5467e-02 ; 37 % ; [0.976156, 0]
+step:320 ; t = 7.8055e+00 ; dt = 3.5467e-02 ; 39 % ; [0.970446, 0]
+step:330 ; t = 8.1601e+00 ; dt = 3.5467e-02 ; 40 % ; [0.964974, 0]
+step:340 ; t = 8.5148e+00 ; dt = 3.5467e-02 ; 42 % ; [0.984975, 0]
+step:350 ; t = 8.8695e+00 ; dt = 3.5467e-02 ; 44 % ; [1.006998, 0]
+step:360 ; t = 9.2242e+00 ; dt = 3.5467e-02 ; 46 % ; [1.017310, 0]
+step:370 ; t = 9.5788e+00 ; dt = 3.5467e-02 ; 47 % ; [1.016863, 0]
+step:380 ; t = 9.9335e+00 ; dt = 3.5467e-02 ; 49 % ; [1.007239, 0]
+> Writing file #2 (dbl.h5) to disk...! WriteData: HDF5 library not available
+step:390 ; t = 1.0288e+01 ; dt = 3.5467e-02 ; 51 % ; [1.009286, 0]
+step:400 ; t = 1.0643e+01 ; dt = 3.5467e-02 ; 53 % ; [1.027799, 0]
+step:410 ; t = 1.0998e+01 ; dt = 3.5467e-02 ; 54 % ; [1.036152, 0]
+step:420 ; t = 1.1352e+01 ; dt = 3.5467e-02 ; 56 % ; [1.042320, 0]
+step:430 ; t = 1.1707e+01 ; dt = 3.5467e-02 ; 58 % ; [1.041993, 0]
+step:440 ; t = 1.2062e+01 ; dt = 3.5467e-02 ; 60 % ; [1.037597, 0]
+step:450 ; t = 1.2416e+01 ; dt = 3.5467e-02 ; 62 % ; [1.044014, 0]
+step:460 ; t = 1.2771e+01 ; dt = 3.5467e-02 ; 63 % ; [1.059157, 0]
+step:470 ; t = 1.3126e+01 ; dt = 3.5467e-02 ; 65 % ; [1.066068, 0]
+step:480 ; t = 1.3480e+01 ; dt = 3.5467e-02 ; 67 % ; [1.069260, 0]
+step:490 ; t = 1.3835e+01 ; dt = 3.5467e-02 ; 69 % ; [1.067453, 0]
+step:500 ; t = 1.4190e+01 ; dt = 3.5467e-02 ; 70 % ; [1.066220, 0]
+step:510 ; t = 1.4544e+01 ; dt = 3.5467e-02 ; 72 % ; [1.071071, 0]
+step:520 ; t = 1.4899e+01 ; dt = 3.5467e-02 ; 74 % ; [1.084603, 0]
+> Writing file #3 (dbl.h5) to disk...! WriteData: HDF5 library not available
+step:530 ; t = 1.5254e+01 ; dt = 3.5467e-02 ; 76 % ; [1.091875, 0]
+step:540 ; t = 1.5608e+01 ; dt = 3.5467e-02 ; 78 % ; [1.092702, 0]
+step:550 ; t = 1.5963e+01 ; dt = 3.5467e-02 ; 79 % ; [1.091860, 0]
+step:560 ; t = 1.6318e+01 ; dt = 3.5467e-02 ; 81 % ; [1.090599, 0]
+step:570 ; t = 1.6672e+01 ; dt = 3.5467e-02 ; 83 % ; [1.094581, 0]
+step:580 ; t = 1.7027e+01 ; dt = 3.5467e-02 ; 85 % ; [1.106634, 0]
+step:590 ; t = 1.7382e+01 ; dt = 3.5467e-02 ; 86 % ; [1.113341, 0]
+step:600 ; t = 1.7736e+01 ; dt = 3.5467e-02 ; 88 % ; [1.114964, 0]
+step:610 ; t = 1.8091e+01 ; dt = 3.5467e-02 ; 90 % ; [1.113062, 0]
+step:620 ; t = 1.8446e+01 ; dt = 3.5467e-02 ; 92 % ; [1.111050, 0]
+step:630 ; t = 1.8800e+01 ; dt = 3.5467e-02 ; 94 % ; [1.113972, 0]
+step:640 ; t = 1.9155e+01 ; dt = 3.5467e-02 ; 95 % ; [1.125353, 0]
+step:650 ; t = 1.9510e+01 ; dt = 3.5467e-02 ; 97 % ; [1.131277, 0]
+step:660 ; t = 1.9864e+01 ; dt = 3.5467e-02 ; 99 % ; [1.133729, 0]
+> Writing file #4 (dbl.h5) to disk...! WriteData: HDF5 library not available
+
+> Total allocated memory   14.82 Mb
+> Elapsed time              0d:0h:0m:42s
+> Average time/step         6.33e-02  (sec)  
+> Local time                Tue Oct 31 23:38:51 2017
+> Done

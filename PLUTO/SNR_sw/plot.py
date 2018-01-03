@@ -144,7 +144,7 @@ def td(ty,t,E,rho,sigma,wdir):
         
         flux = D.rho*(D.bx1**2+D.bx2**2+D.bx3**2)**1.25*(D.vx1**2+D.vx2**2+D.vx3**2)**0
         flux = (flux-np.mean(flux))*1+np.mean(flux)*1
-        flux = flux.sum(axis=0)
+        flux = flux.sum(axis=1)
         flux = nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
 
         fig = plt.figure(figsize=(7,6))
@@ -194,23 +194,23 @@ def td(ty,t,E,rho,sigma,wdir):
         print(D.x1.shape)
 #        arr = np.meshgrid(D.x1,D.x2,D.x3)
 #        mlab.points3d(arr[0][0:256:8,0:256:8,0:256:8], arr[1][0:256:8,0:256:8,0:256:8], arr[2][0:256:8,0:256:8,0:256:8], D.rho[0:256:8,0:256:8,0:256:8])
-        vol = mlab.pipeline.volume(mlab.pipeline.scalar_field(np.log10(D.prs*D.rho)))
-        ctf = ColorTransferFunction()
-        ctf.add_hsv_point(-8, 0.8, 1, 1)
-        ctf.add_hsv_point(-6.5, 0.45, 1, 1)
-        ctf.add_hsv_point(-5.4, 0.15, 1, 1)
+        vol = mlab.pipeline.volume(mlab.pipeline.scalar_field((D.bx1**2+D.bx2**2+D.bx3**2)*D.rho))
+        # ctf = ColorTransferFunction()
+        # ctf.add_hsv_point(-8, 0.8, 1, 1)
+        # ctf.add_hsv_point(-6.5, 0.45, 1, 1)
+        # ctf.add_hsv_point(-5.4, 0.15, 1, 1)
 
-        vol._volume_property.set_color(ctf)
-        vol._ctf = ctf
-        vol.update_ctf = True
-        otf = PiecewiseFunction()
+        # vol._volume_property.set_color(ctf)
+        # vol._ctf = ctf
+        # vol.update_ctf = True
+        # otf = PiecewiseFunction()
 
-        otf.add_point(-8, 0)
-        otf.add_point(-5.7, 0.082)
-        otf.add_point(-5.4, 0.0)
+        # otf.add_point(-8, 0)
+        # otf.add_point(-5.7, 0.082)
+        # otf.add_point(-5.4, 0.0)
 
-        vol._otf = otf
-        vol._volume_property.set_scalar_opacity(otf)
+        # vol._otf = otf
+        # vol._volume_property.set_scalar_opacity(otf)
 #        mlab.contour3d(D.prs)
     #    mlab.quiver3d(D.bx1, D.bx2, D.bx3)
     #    src = mlab.pipeline.vector_field(D.bx1, D.bx2, D.bx3)
@@ -226,11 +226,11 @@ if __name__=='__main__':
     #        }  
     
     choose = 'single' #single or multiple or temp
-    ty     = 'flu'    
-    t      = 50 
+    ty     = 'flux'    
+    t      = 5 
     E      = 1.3
     rho    = 0.21
-    sigma  = 4
+    sigma  = 1
     
     wdir = './'
     nlinf = pp.nlast_info(w_dir=wdir)

@@ -14,7 +14,7 @@
 
 #define  EOS                     IDEAL
 #define  ENTROPY_SWITCH          NO
-#define  DIVB_CONTROL            CONSTRAINED_TRANSPORT
+#define  DIVB_CONTROL            EIGHT_WAVES
 #define  BACKGROUND_FIELD        NO
 #define  RESISTIVITY             NO
 #define  THERMAL_CONDUCTION      NO
@@ -52,11 +52,9 @@
 #define  INITIAL_SMOOTHING         NO
 #define  WARNING_MESSAGES          NO
 #define  PRINT_TO_FILE             NO
-#define  INTERNAL_BOUNDARY         NO
+#define  INTERNAL_BOUNDARY         YES
 #define  SHOCK_FLATTENING          NO
-#define  CHAR_LIMITING             YES
-#define  LIMITER                   VANLEER_LIM
-#define  CT_EMF_AVERAGE            ARITHMETIC
-#define  CT_EN_CORRECTION          YES
-#define  ASSIGN_VECTOR_POTENTIAL   YES
+#define  CHAR_LIMITING             NO
+#define  LIMITER                   VANALBADA_LIM
+#define  ASSIGN_VECTOR_POTENTIAL   NO
 #define  UPDATE_VECTOR_POTENTIAL   NO

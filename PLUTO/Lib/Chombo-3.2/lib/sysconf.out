@@ -1,0 +1,12 @@
+USER           = unknown
+WORKING_DIR    = /mnt/d/Documents/Github/PLUTO/PLUTO/Lib/Chombo-3.2/lib
+SYSTEM_NAME    = Linux
+NODE_NAME      = DESKTOP-S05CEV2
+RELEASE        = 4.4.0-43-Microsoft
+ARCH           = x86_64
+BYTE_ORDER     = little
+VERSION        = #1-Microsoft Wed Dec 31 14:42:53 PST 2014
+PLUTO_DIR      = /mnt/d/Documents/Github/PLUTO/PLUTO
+PLUTO_VERSION  = "4.2"
+C_COMPILER     = gcc
+MPI_C_COMPILER = mpicc
