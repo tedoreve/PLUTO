@@ -102,7 +102,8 @@ if __name__=='__main__':
     index = 1.0         
     u     = 1.3
     rho_constant = 0.21*u
-    sw    = ['../Stellar_Wind/',10]    #wdir,number,r
+    # sw    = ['../Stellar_Wind/',10]    #wdir,number,r
+    sw    = ['./',10]
     clump = [200,10,1.0,50.0]             #number,r,index,e
     mag   = 3.2                           #widthi,widthj
     total = combine(['sw'],'W51C.fits','rho0.dbl',width,index,rho_constant,sw,clump,mag)

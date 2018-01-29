@@ -18,6 +18,7 @@ UNIT_t = UNIT_LENGTH/UNIT_VELOCITY
 UNIT_P = UNIT_DENSITY*UNIT_VELOCITY**2
 UNIT_M = UNIT_DENSITY*UNIT_LENGTH**3
 UNIT_E = UNIT_M*UNIT_VELOCITY**2
+UNIT_G = UNIT_VELOCITY/UNIT_t/UNIT_M*UNIT_LENGTH**2
 #UNIT_B = ((UNIT_E/UNIT_LENGTH**3)**0.5).value*un.G
 UNIT_NU= UNIT_P*UNIT_t
 
@@ -29,7 +30,8 @@ t   = 1000*un.yr
 P   = 1*un.Ba
 E_th= 0.96*un.erg
 E   = 1.3e51*un.erg
-M   = 11*con.M_sun
+M   = 3e6*con.M_sun
+G   = 1*con.G
 nu  = 2*un.uPa*un.s
 
 n   /= UNIT_DENSITY
@@ -40,6 +42,7 @@ t   /= UNIT_t
 P   /= UNIT_P
 E   /= UNIT_E
 M   /= UNIT_M
+G   /= UNIT_G
 nu  /= UNIT_NU
 
 print('n = ', n.to('').value, '\n'
@@ -50,6 +53,7 @@ print('n = ', n.to('').value, '\n'
       'P = ', P.to('').value, '\n'
       'E = ', E.to('').value, '\n'
       'M = ', M.to('').value, '\n'
+      'G = ', G.to('').value, '\n'
       'nu = ', nu.to('').value, '\n'
       )
 

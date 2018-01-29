@@ -53,35 +53,53 @@ void Init (double *us, double x1, double x2, double x3)
  *
  *********************************************************************** */
 {
+  static int first_call = 1;
   double rho, cs, R;
 
   rho = g_inputParam[RHO_AMB];
   cs  = g_inputParam[CS_AMB];
   us[RHO] = rho;
   us[PRS] = cs*cs*rho/g_gamma;
-
-  #if GEOMETRY == CARTESIAN
-   us[VX1] = 0.0;
-   us[VX2] = 0.0;
-   us[VX3] = -g_inputParam[V_AMB];
-   us[BX1] = 0.0;
-   us[BX2] = 0.0;
-   us[BX3] = g_inputParam[MAG];
-  #elif GEOMETRY == CYLINDRICAL
-   us[VX1] = 0.0;
-   us[VX2] = -g_inputParam[V_AMB];
-   us[BX1] = 0.0;
-   us[BX2] = g_inputParam[MAG];
-  #elif GEOMETRY == SPHERICAL
-   us[VX1] =  g_inputParam[V_AMB]*cos(x2);
-   us[VX2] = -g_inputParam[V_AMB]*sin(x2);
-   us[BX1] = 0.0;
-   us[BX2] = 0.0;
-  #endif
+	
+  if (first_call){
+    int k, input_var[256];
+    for (k = 0; k< 256; k++) input_var[k] = -1;
+    input_var[0] = RHO;
+    input_var[1] = BX1;
+    input_var[2] = BX2;
+    input_var[3] = BX3;        
+    input_var[4] = VX1;
+    input_var[5] = VX2;
+    input_var[6] = VX3;    
+    input_var[7] = -1;
+    InputDataSet ("./grid0.out",input_var);
+    InputDataRead("./rho0.dbl"," ");
+    first_call = 0;
+  }
+  InputDataInterpolate(us, x1, x2, x3);  /* -- interpolate density from
+                                              input data file -- */
+  // #if GEOMETRY == CARTESIAN
+   // us[VX1] = 0.0;
+   // us[VX2] = 0.0;
+   // us[VX3] = -g_inputParam[V_AMB];
+   // us[BX1] = 0.0;
+   // us[BX2] = 0.0;
+   // us[BX3] = g_inputParam[MAG];
+  // #elif GEOMETRY == CYLINDRICAL
+   // us[VX1] = 0.0;
+   // us[VX2] = -g_inputParam[V_AMB];
+   // us[BX1] = 0.0;
+   // us[BX2] = g_inputParam[MAG];
+  // #elif GEOMETRY == SPHERICAL
+   // us[VX1] =  g_inputParam[V_AMB]*cos(x2);
+   // us[VX2] = -g_inputParam[V_AMB]*sin(x2);
+   // us[BX1] = 0.0;
+   // us[BX2] = 0.0;
+  // #endif
 
   R = sqrt(x1*x1 + x2*x2 + x3*x3);
   // us[TRC] = (R <= 1.0 ? 1.0:0.0);
-  g_smallPressure = 1.e-5;
+  // g_smallPressure = 1.e-5;
 }
 
 /* **************************************************************** */

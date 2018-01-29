@@ -111,7 +111,7 @@ void Init (double *us, double x1, double x2, double x3)
 {
   static int first_call = 1;
   double r, theta, phi, B0, E_ej, M_ej, R_ej, n_h, w_c, s, n, n_ISM, r_c, T, u, g_gamma;
-  double fnc, alpha, v_ej, t, rho_ch, R_ch, eta, ph, l, up, down;
+  double fnc, alpha, v_ej, t, rho_ch, R_ch, eta, ph, l, up, down, dist;
   E_ej    = g_inputParam[E_EJ];         //爆发能量
   M_ej    = g_inputParam[M_EJ];         //爆发质量
   R_ej    = g_inputParam[R_EJ];         //爆发半径
@@ -123,6 +123,7 @@ void Init (double *us, double x1, double x2, double x3)
   n_ISM   = n_h*u;                     //激波前均匀介质区数密度
   T       = g_inputParam[Temp];         //初始温度
   g_gamma = g_inputParam[GAMMA];        //绝热系数
+  dist    = g_inputParam[DIST];         //星风点到超新星爆发点的距离
 
   r_c     = R_ej*w_c;
   fnc     = 3.0/4.0/CONST_PI*(1.0-n/3.0)/(1.0-n/3.0*pow(w_c,3.0-n));
@@ -146,7 +147,11 @@ void Init (double *us, double x1, double x2, double x3)
 //  part2   = C*(pow(R_ej,index)-pow(r_c,index))/index;
 //  v0      = pow(E_ej,0.5)*pow(part1+part2,-0.5);
 
-  r = D_EXPAND(x1*x1, + x2*x2, + x3*x3);
+  /***************************************************************************/
+
+  g_smallPressure = 1.e-5;
+  /*****************************************************************************/
+  r = D_EXPAND(x1*x1, + x2*x2, + (x3-dist)*(x3-dist));
   r = sqrt(r);
 
   us[RHO] = n_ISM;
@@ -155,15 +160,18 @@ void Init (double *us, double x1, double x2, double x3)
   us[VX3] = 0.0;
   us[PRS] = n_ISM*CONST_kB*T/1.67e-6;
 
-  #if ADD_TURBULENCE == YES
+  #if ADD_BACKGROUND == YES
   if (first_call){
-    int k, input_var[200];
-    for (k = 0; k< 200; k++) input_var[k] = -1;
+    int k, input_var[256];
+    for (k = 0; k< 256; k++) input_var[k] = -1;
     input_var[0] = RHO;
     input_var[1] = BX1;
     input_var[2] = BX2;
-    input_var[3] = BX3;         
-    input_var[4] = -1;
+    input_var[3] = BX3;        
+    input_var[4] = VX1;
+    input_var[5] = VX2;
+    input_var[6] = VX3;    
+    input_var[7] = -1;
     InputDataSet ("./grid0.out",input_var);
     InputDataRead("./rho0.dbl"," ");
     first_call = 0;
@@ -227,6 +235,9 @@ void Init (double *us, double x1, double x2, double x3)
    us[BX1] = us[BX2] = us[BX3] =
    us[AX1] = us[AX2] = us[AX3] = 0.0;
   #endif
+  
+    
+
 
 }
 /* ********************************************************************* */
@@ -240,8 +251,8 @@ double BodyForcePotential(double x1, double x2, double x3)
  *************************************************************************** */
 {   
 	double M_star, G;
-	G = 1.0e-12;
-	M_star  = g_inputParam[M_STAR];       //中子星质量
+	G = 1.0e-12;                          //gravitational constant in this unit setting
+	M_star  = g_inputParam[M_STAR];       //the mass of the central black hole
 	#if GEOMETRY == CARTESIAN
 	return -G*M_star/sqrt(x1*x1+x2*x2+x3*x3);
 	#elif GEOMETRY == CYLINDRICAL
@@ -262,11 +273,99 @@ void Analysis (const Data *d, Grid *grid)
 
 }
 /* ********************************************************************* */
-void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
+void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
 /*
+ * Sets inflow boundary condition at the top boundary (side == X2_END)
+ * and the stellar wind region when side == 0.
  *
  *********************************************************************** */
 {
+  int   i, j, k, nv;
+  double *x1, *x2, *x3;
+  double  r, r0, cs;
+  double  Vwind , rho, vr;
+
+  x1 = grid[IDIR].xgc;
+  x2 = grid[JDIR].xgc;
+  x3 = grid[KDIR].xgc;
+
+  Vwind = g_inputParam[V_WIND];
+  rho   = g_inputParam[RHO_WIND];
+  r0    = g_inputParam[R_WIND];
+  cs    = g_inputParam[CS_WIND];
+  
+  if (side == 0){
+
+    TOT_LOOP(k,j,i){
+      #if GEOMETRY == CARTESIAN
+       r  = sqrt(x1[i]*x1[i] + x2[j]*x2[j] + x3[k]*x3[k]);
+       if (r <= r0){
+         // vr    = tanh(r/r0/0.1)*Vwind;
+         // rho   = Vwind*r0*r0/(vr*r*r);
+         d->Vc[RHO][k][j][i] = rho;
+         d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
+         d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
+         d->Vc[VX3][k][j][i] = Vwind*x3[k]/r;
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
+       }
+      #elif GEOMETRY == CYLINDRICAL
+       r  = sqrt(x1[i]*x1[i] + x2[j]*x2[j]);
+       if (r <= r0){
+         // vr    = tanh(r/r0/0.1)*Vwind;
+         // rho   = Vwind*r0*r0/(vr*r*r);
+         d->Vc[RHO][k][j][i] = rho;
+         d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
+         d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
+       }
+      #endif
+    }
+  }
+
+  if (side == X1_BEG){  /* -- X1_BEG boundary -- */
+  }
+
+  if (side == X1_END){  /* -- X1_END boundary -- */
+  }
+
+  if (side == X2_BEG){  /* -- X2_BEG boundary -- */
+   X2_BEG_LOOP(k,j,i){ }
+  }
+
+  if (side == X2_END){  /* -- X2_END boundary -- */
+
+    cs  = g_inputParam[CS_AMB];
+    rho = g_inputParam[RHO_AMB];
+    X2_END_LOOP(k,j,i){
+      #if GEOMETRY == CYLINDRICAL
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[VX2][k][j][i] = -g_inputParam[V_CSM];
+       d->Vc[RHO][k][j][i] =  rho;
+       d->Vc[PRS][k][j][i] =  cs*cs*rho/g_gamma;
+      #endif
+    }
+  }
+
+  if (side == X3_BEG){  /* -- X3_BEG boundary -- */
+    X3_BEG_LOOP(k,j,i){}
+  }
+
+  if (side == X3_END){  /* -- X3_END boundary -- */
+
+    cs  = g_inputParam[CS_AMB];
+    rho = g_inputParam[RHO_AMB];
+    X3_END_LOOP(k,j,i){
+      #if GEOMETRY == CARTESIAN
+       d->Vc[VX1][k][j][i] = 0.0;
+       d->Vc[VX2][k][j][i] = 0.0;
+       d->Vc[VX3][k][j][i] = -g_inputParam[V_AMB];
+       d->Vc[RHO][k][j][i] =  rho;
+       d->Vc[PRS][k][j][i] =  cs*cs*rho/g_gamma;
+      #endif
+    }
+  }
 }
 #if BACKGROUND_FIELD == YES
 /* ********************************************************************* */

@@ -64,19 +64,19 @@ void Init (double *us, double x1, double x2, double x3)
    us[VX1] = 0.0;
    us[VX2] = 0.0;
    us[VX3] = -g_inputParam[V_AMB];
-   us[BX1] = 0.0;
-   us[BX2] = 0.0;
-   us[BX3] = g_inputParam[MAG];
+   us[BX1] = g_inputParam[MAG1];
+   us[BX2] = g_inputParam[MAG2];
+   us[BX3] = g_inputParam[MAG3];
   #elif GEOMETRY == CYLINDRICAL
    us[VX1] = 0.0;
    us[VX2] = -g_inputParam[V_AMB];
-   us[BX1] = 0.0;
-   us[BX2] = g_inputParam[MAG];
+   us[BX1] = g_inputParam[MAG1];
+   us[BX2] = g_inputParam[MAG2];
   #elif GEOMETRY == SPHERICAL
    us[VX1] =  g_inputParam[V_AMB]*cos(x2);
    us[VX2] = -g_inputParam[V_AMB]*sin(x2);
-   us[BX1] = 0.0;
-   us[BX2] = 0.0;
+   us[BX1] = g_inputParam[MAG1];
+   us[BX2] = g_inputParam[MAG2];
   #endif
 
   R = sqrt(x1*x1 + x2*x2 + x3*x3);
@@ -127,7 +127,7 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
          d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
          d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
          d->Vc[VX3][k][j][i] = Vwind*x3[k]/r;
-         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*rho;
          d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
        }
       #elif GEOMETRY == CYLINDRICAL
@@ -138,7 +138,7 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
          d->Vc[RHO][k][j][i] = rho;
          d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
          d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
-         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*rho;
          d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
        }
       #endif

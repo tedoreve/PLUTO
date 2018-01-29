@@ -8,7 +8,7 @@
 #define  TIME_STEPPING           RK2
 #define  DIMENSIONAL_SPLITTING   NO
 #define  NTRACER                 0
-#define  USER_DEF_PARAMETERS     15
+#define  USER_DEF_PARAMETERS     23
 
 /* -- physics dependent declarations -- */
 
@@ -38,13 +38,21 @@
 #define  GAMMA                   12
 #define  Temp                    13
 #define  NU_VISC                 14
+#define  RHO_AMB                 15
+#define  CS_AMB                  16
+#define  V_AMB                   17
+#define  DIST                    18
+#define  RHO_WIND                19
+#define  CS_WIND                 20
+#define  V_WIND                  21
+#define  R_WIND                  22
 
 /* [Beg] user-defined constants (do not change this line) */
 
 #define  UNIT_DENSITY            CONST_mp
 #define  UNIT_LENGTH             CONST_pc
 #define  UNIT_VELOCITY           1.0e9
-#define  ADD_TURBULENCE          YES
+#define  ADD_BACKGROUND          NO
 
 /* [End] user-defined constants (do not change this line) */
 
@@ -53,7 +61,7 @@
 #define  INITIAL_SMOOTHING         NO
 #define  WARNING_MESSAGES          NO
 #define  PRINT_TO_FILE             NO
-#define  INTERNAL_BOUNDARY         NO
+#define  INTERNAL_BOUNDARY         YES
 #define  SHOCK_FLATTENING          NO
 #define  CHAR_LIMITING             YES
 #define  LIMITER                   VANLEER_LIM

@@ -8,7 +8,7 @@
 #define  TIME_STEPPING           RK2
 #define  DIMENSIONAL_SPLITTING   NO
 #define  NTRACER                 0
-#define  USER_DEF_PARAMETERS     8
+#define  USER_DEF_PARAMETERS     10
 
 /* -- physics dependent declarations -- */
 
@@ -26,11 +26,13 @@
 #define  RHO_AMB                 0
 #define  CS_AMB                  1
 #define  V_AMB                   2
-#define  MAG                     3
-#define  RHO_WIND                4
-#define  CS_WIND                 5
-#define  V_WIND                  6
-#define  R_WIND                  7
+#define  MAG1                    3
+#define  MAG2                    4
+#define  MAG3                    5
+#define  RHO_WIND                6
+#define  CS_WIND                 7
+#define  V_WIND                  8
+#define  R_WIND                  9
 
 /* [Beg] user-defined constants (do not change this line) */
 

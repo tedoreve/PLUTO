@@ -149,19 +149,19 @@ def td(ty,t,E,rho,sigma,wdir):
 
         fig = plt.figure(figsize=(7,6))
         ax = fig.add_subplot(111)
-        neg = ax.imshow(np.log10(flux).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
+        neg = ax.imshow(flux.T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
         levels = np.arange(-5.5, -4, 0.5)
-        plt.contour(np.log10(flux).T, levels,
-                     origin='lower',
-                     linewidths=2,
-                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
+#        plt.contour(np.log10(flux).T, levels,
+#                     origin='lower',
+#                     linewidths=2,
+#                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
         cbar = fig.colorbar(neg,ax=ax)
         cbar.set_label(r'log(S)')
         ax.set_xlabel('l offset (pc)')
         ax.set_ylabel('b offset (pc)')
         ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
         fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
-        fig.savefig('t'+str(t)+'_density'+str(rho)+'_E'+str(E)+'.eps')
+        fig.savefig('t'+str(t)+'_density'+str(rho)+'_E'+str(E)+'.png')
         fig.clear()
         ax = fig.add_subplot(111)
         ax.plot((np.rot90(np.eye(len(flux)))*flux.T).sum(axis=0))
@@ -227,9 +227,9 @@ if __name__=='__main__':
     
     choose = 'single' #single or multiple or temp
     ty     = 'flux'    
-    t      = 5 
+    t      = 12 
     E      = 1.3
-    rho    = 0.21
+    rho    = 1.0
     sigma  = 1
     
     wdir = './'
