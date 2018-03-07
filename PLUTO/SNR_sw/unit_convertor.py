@@ -23,15 +23,15 @@ UNIT_E = UNIT_M*UNIT_VELOCITY**2
 UNIT_NU= UNIT_P*UNIT_t
 UNIT_G = (UNIT_VELOCITY/UNIT_LENGTH)**2/UNIT_DENSITY
 
-n   = 0.21*con.m_p/un.cm**3
+n   = 1.0*con.m_p/un.cm**3
 l   = 4*un.pc
 v   = 490*un.km/un.s
 B   = 9*un.uG
-t   = 1000*un.yr
+t   = 10000*un.yr
 P   = 1*un.Ba
 E_th= 0.96*un.erg
-E   = 1.0e51*un.erg
-M   = 11*con.M_sun
+E   = 3.0e51*un.erg
+M   = 15.3*con.M_sun
 nu  = 2*un.uPa*un.s
 G   = 1*con.G
 

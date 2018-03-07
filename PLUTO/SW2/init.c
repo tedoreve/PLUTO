@@ -145,7 +145,7 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
          d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
          d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
          d->Vc[VX3][k][j][i] = Vwind*x3[k]/r;
-         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*rho;
          d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
        }
       #elif GEOMETRY == CYLINDRICAL
@@ -156,7 +156,7 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
          d->Vc[RHO][k][j][i] = rho;
          d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
          d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
-         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
+         d->Vc[PRS][k][j][i] = cs*cs/g_gamma*rho;
          d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
        }
       #endif
