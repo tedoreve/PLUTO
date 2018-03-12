@@ -13,11 +13,10 @@ from mpl_toolkits.axes_grid1 import AxesGrid
 
 #==============================================================================
 
-ty     = 'flux'    
-t      = 1 
+t      = 16 
 E      = 1.3
 rho    = 1.0
-sigma  = 1
+sigma  = 1.0
 
 wdir = './'
 nlinf = pp.nlast_info(w_dir=wdir)
@@ -34,7 +33,7 @@ for i in range(3):
     flux = flux_vol.sum(axis=i)
     flux = nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
     
-    fig = plt.figure(figsize=(6.3,5.5))
+    fig = plt.figure(figsize=(6.2,5.5))
     ax = AxesGrid(fig, 111,  # similar to subplot(122)
             nrows_ncols=(1, 1),
             axes_pad=0.0,
@@ -51,22 +50,21 @@ for i in range(3):
     
     ax.cbar_axes[0].colorbar(neg)
     
-    ax.cbar_axes[0].toggle_label(True)
-    ax.cbar_axes[0].axis[ax.cbar_axes[0].orientation].set_label('relative flux density')
     
-    fig.subplots_adjust(top=0.99,bottom=0.08,left=0.11,right=0.91)
+    fig.subplots_adjust(top=0.99,bottom=0.11,left=0.11,right=0.95)
     
     if i == 0:
-        ax.axes_llc.set_xlabel('y (pc)')
-        ax.axes_llc.set_ylabel('z (pc)')       
+        ax.axes_llc.set_xlabel('y (pc)',fontsize=20)
+        ax.axes_llc.set_ylabel('z (pc)',fontsize=20)       
         fig.savefig('t'+str(t)+'_density'+str(int(rho))+'_E'+str(int(E))+'_yz.eps')
         
     if i == 1:
-        ax.axes_llc.set_xlabel('x (pc)')
-        ax.axes_llc.set_ylabel('z (pc)')       
+        ax.axes_llc.set_xlabel('x (pc)',fontsize=20)
+        ax.axes_llc.set_ylabel('z (pc)',fontsize=20)       
         fig.savefig('t'+str(t)+'_density'+str(int(rho))+'_E'+str(int(E))+'_xz.eps')
         
     if i == 2:
-        ax.axes_llc.set_xlabel('x (pc)')
-        ax.axes_llc.set_ylabel('y (pc)')       
+        ax.axes_llc.set_xlabel('x (pc)',fontsize=20)
+        ax.axes_llc.set_ylabel('y (pc)',fontsize=20)       
         fig.savefig('t'+str(t)+'_density'+str(int(rho))+'_E'+str(int(E))+'_xy.eps')
+

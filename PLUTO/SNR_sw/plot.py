@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib as mpl
-#mpl.use('Agg')   # generate postscript output by default
+mpl.use('Agg')   # generate postscript output by default
 import matplotlib.pyplot as plt
 #import matplotlib.pylab as plb
 import pyPLUTO as pp
@@ -10,7 +10,6 @@ from mayavi import mlab
 from matplotlib.colors import Normalize
 from tvtk.util.ctf import ColorTransferFunction
 from tvtk.util.ctf import PiecewiseFunction
-from mpl_toolkits.axes_grid1 import AxesGrid
 
 
 #class MidpointNormalize(Normalize):
@@ -147,56 +146,33 @@ def td(ty,t,E,rho,sigma,wdir):
         flux = (flux-np.mean(flux))*1+np.mean(flux)*1
         flux = flux.sum(axis=1)
         flux = nd.gaussian_filter(flux,sigma=(sigma,sigma),order=0)
-        
-        fig = plt.figure(figsize=(6.3,5.5))
-        ax = AxesGrid(fig, 111,  # similar to subplot(122)
-                nrows_ncols=(1, 1),
-                axes_pad=0.0,
-                label_mode="1",
-                share_all=True,
-                cbar_location="right",
-                cbar_mode="edge",
-                cbar_size="2%",
-                cbar_pad="0%",
-                )
-#        fig = plt.figure()
-#        ax = fig.add_subplot(111)
-        neg = ax[0].imshow(flux.T*10000,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
+
+        fig = plt.figure(figsize=(7,6))
+        ax = fig.add_subplot(111)
+        neg = ax.imshow(flux.T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
         levels = np.arange(-5.5, -4, 0.5)
 #        plt.contour(np.log10(flux).T, levels,
 #                     origin='lower',
 #                     linewidths=2,
 #                     extent=[D.x1[0],D.x1[-1],D.x2[0],D.x2[-1]])
-#        cmaps = [plt.get_cmap("spring"), plt.get_cmap("winter")]
-#    
-#        im = grid[0].imshow(Z, extent=extent, interpolation="nearest",
-#                            cmap=cmaps[0])
-    
-        ax.cbar_axes[0].colorbar(neg)
-    
-        for cax in ax.cbar_axes:
-            cax.toggle_label(True)
-            cax.axis[cax.orientation].set_label(r'log(S)')
-            
-#        cbar = fig.colorbar(neg,ax=ax)
-#        cbar.set_label(r'log(S)')
-        ax.axes_llc.set_xlabel('l offset (pc)')
-        ax.axes_llc.set_ylabel('b offset (pc)')
-#        ax.axes_llc.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
-        fig.subplots_adjust(top=0.99,bottom=0.08,left=0.11,right=0.91)
-        fig.savefig('t'+str(t)+'_density'+str(rho)+'_E'+str(E)+'.eps')
-        plt.show()
-#        fig.clear()
-#        ax = fig.add_subplot(111)
-#        ax.plot((np.rot90(np.eye(len(flux)))*flux.T).sum(axis=0))
-#        ax.set_xlim(0,256)
-#        fig.savefig('change.eps')
+        cbar = fig.colorbar(neg,ax=ax)
+        cbar.set_label(r'log(S)')
+        ax.set_xlabel('l offset (pc)')
+        ax.set_ylabel('b offset (pc)')
+        ax.set_title(r't='+str(t)+r'$\ \mathregular{\rho}$='+str(rho)+' E='+str(E))
+        fig.subplots_adjust(top=0.9,bottom=0.1,left=0.11,right=0.97)
+        fig.savefig('t'+str(t)+'_density'+str(rho)+'_E'+str(E)+'.png')
+        fig.clear()
+        ax = fig.add_subplot(111)
+        ax.plot((np.rot90(np.eye(len(flux)))*flux.T).sum(axis=0))
+        ax.set_xlim(0,256)
+        fig.savefig('change.eps')
         
     elif ty == 'rho':
 #        t = 850
         fig = plt.figure(figsize=(7,6))
         ax = fig.add_subplot(111)
-        neg = ax.imshow(np.log10(D.rho[:,:,64]).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
+        neg = ax.imshow(np.log10(D.rho[:,:,128]).T,origin='lower',extent=[D.x2[0],D.x2[-1],D.x3[0],D.x3[-1]])
         cbar = fig.colorbar(neg,ax=ax)
         cbar.set_label(r'log($\mathregular{\rho/cm^{-3}}$)')
         ax.set_xlabel('x offset (pc)')
@@ -208,8 +184,8 @@ def td(ty,t,E,rho,sigma,wdir):
         Xmesh, Ymesh = np.meshgrid(D.x2.T,D.x3.T)
         xcong = T.congrid(Xmesh,newdims,method='linear')
         ycong = T.congrid(Ymesh,newdims,method='linear')
-        velxcong = T.congrid(D.bx1[:,:,64].T,newdims,method='linear')
-        velycong = T.congrid(D.bx2[:,:,64].T,newdims,method='linear')
+        velxcong = T.congrid(D.bx1[:,:,128].T,newdims,method='linear')
+        velycong = T.congrid(D.bx2[:,:,128].T,newdims,method='linear')
         plt.gca().quiver(xcong, ycong, velxcong, velycong,color='w')
         plt.show()
         fig.savefig('rho-t='+str(t)+'_density='+str(rho)+'_E='+str(E)+'.eps') # Only to be saved as either .png or .jpg
@@ -219,7 +195,8 @@ def td(ty,t,E,rho,sigma,wdir):
 #        arr = np.meshgrid(D.x1,D.x2,D.x3)
 #        mlab.points3d(arr[0][0:256:8,0:256:8,0:256:8], arr[1][0:256:8,0:256:8,0:256:8], arr[2][0:256:8,0:256:8,0:256:8], D.rho[0:256:8,0:256:8,0:256:8])
         vol = mlab.pipeline.volume(mlab.pipeline.scalar_field((D.bx1**2+D.bx2**2+D.bx3**2)*D.rho))
-        # ctf = ColorTransferFunction()
+       # vol = mlab.pipeline.volume(mlab.pipeline.scalar_field(D.rho))
+	# ctf = ColorTransferFunction()
         # ctf.add_hsv_point(-8, 0.8, 1, 1)
         # ctf.add_hsv_point(-6.5, 0.45, 1, 1)
         # ctf.add_hsv_point(-5.4, 0.15, 1, 1)
@@ -236,10 +213,18 @@ def td(ty,t,E,rho,sigma,wdir):
         # vol._otf = otf
         # vol._volume_property.set_scalar_opacity(otf)
 #        mlab.contour3d(D.prs)
-    #    mlab.quiver3d(D.bx1, D.bx2, D.bx3)
-    #    src = mlab.pipeline.vector_field(D.bx1, D.bx2, D.bx3)
-    #    mlab.pipeline.vectors(src, mask_points=20000, scale_factor=30.)
-    #    mlab.outline()
+#        mlab.quiver3d(D.bx1, D.bx2, D.bx3)
+	ave = np.mean(D.bx1**2+D.bx2**2+D.bx3**2)
+	for k in range(D.bx1.shape[2]):
+	    for j in range(D.bx1.shape[1]):
+		for i in range(D.bx1.shape[0]):
+		    if D.bx1[k,j,i]**2+ D.bx2[k,j,i]**2+D.bx3[k,j,i]**2 < 1.5* ave:
+		        D.bx1[k,j,i] = 0.0 
+			D.bx2[k,j,i] = 0.0
+			D.bx3[k,j,i] = 0.0
+        src = mlab.pipeline.vector_field(D.bx1, D.bx2, D.bx3)
+        mlab.pipeline.vectors(src, mask_points=1000, scale_factor=30.)
+        mlab.outline()
 #        mlab.savefig(str(t)+'.obj')
     
 #==================================main========================================  
@@ -250,8 +235,8 @@ if __name__=='__main__':
     #        }  
     
     choose = 'single' #single or multiple or temp
-    ty     = 'flux'    
-    t      = 5 
+    ty     = ''    
+    t      = 6 
     E      = 1.3
     rho    = 1.0
     sigma  = 1
