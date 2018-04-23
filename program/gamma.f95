@@ -4,30 +4,32 @@ program main
     character :: xx
     integer nn,mm,ii,jj,kk,key1
     real*8 T1,u1,B1,nISM
-    real, allocatable, dimension(:) :: ISM
-    real, allocatable, dimension(:) :: B
+    !real, allocatable, dimension(:) :: ISM
+    !real, allocatable, dimension(:) :: B
     !real, dimension(2) :: ISM
-    open(12,file="rho.txt")
-        read(12,*)xx,mm
-        allocate(ISM(mm))
-        read(12,*)(ISM(ii),ii=1,mm)
-    close(12)
-
-    open(12,file="B.txt")
-        read(12,*)xx,nn
-        allocate(B(nn))
-        read(12,*)(B(ii),ii=1,nn)
-    close(12)
     
+	!!!!!!!!!!!!!!!!!!!!!!!!!set the density and the magnetic field in every pixel!!!!!!!!!!
+    !open(12,file="rho.txt")
+    !    read(12,*)xx,mm
+    !    allocate(ISM(mm))
+    !    read(12,*)(ISM(ii),ii=1,mm)
+    !close(12)
+
+    !open(12,file="B.txt")
+    !    read(12,*)xx,nn
+    !    allocate(B(nn))
+    !    read(12,*)(B(ii),ii=1,nn)
+    !close(12)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!set the constants for various mechanism!!!!!!!!!!!!!!!!!!!!!!!
     T1=2.7d0
     u1=2.5d-1 
     key1=1
-    write(*,*)ISM
-do  kk=1,mm
-do  jj=1,nn
+    !write(*,*)ISM
+!do  kk=1,mm
+!do  jj=1,nn
     
-    nISM=ISM(kk)    
-    B1=B(jj)
+    nISM=1.0    
+    B1=1.0e-6
 
     nelec1=2000    
     do ii=1,nelec1
@@ -55,7 +57,7 @@ do  jj=1,nn
     end do
     call bkg_rad(Ebk1,Fbk1,nbk1,T1,u1)
 
-write(cfile,*)kk,jj
+!write(cfile,*)kk,jj
 
 
 Open(12,File="Eelec.txt")
@@ -101,7 +103,8 @@ End Do
 Close(12)
 
 call RADIATION_SYN(Eelec1,Felec1,nelec1,B1,Eg1,Fg1,ng1)
-Open(12,File="Fsyn"//Trim(AdjustL(cfile))//".txt")
+!Open(12,File="Fsyn"//Trim(AdjustL(cfile))//".txt")
+Open(12,File="Fsyn.txt")
 Do ii = 1,100
    write(12,*)Fg1(ii)
 End Do
@@ -130,6 +133,6 @@ End Do
 Close(12)
 
 
-end do
-end do
+!end do
+!end do
 end
