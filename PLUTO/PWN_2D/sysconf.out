@@ -1,0 +1,12 @@
+USER           = lingzhi
+WORKING_DIR    = /home/lingzhi/Downloads/Github/PLUTO/PLUTO/Test_Problems/HD/Stellar_Wind
+SYSTEM_NAME    = Linux
+NODE_NAME      = lingzhi-Lenovo
+RELEASE        = 3.5.0-37-generic
+ARCH           = x86_64
+BYTE_ORDER     = little
+VERSION        = #58~precise1-Ubuntu SMP Wed Jul 10 17:48:11 UTC 2013
+PLUTO_DIR      = /home/lingzhi/Downloads/PLUTO
+PLUTO_VERSION  = "4.2"
+C_COMPILER     = gcc
+MPI_C_COMPILER = mpicc
