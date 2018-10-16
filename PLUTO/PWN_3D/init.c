@@ -154,6 +154,14 @@ void Init (double *us, double x1, double x2, double x3)
   r = D_EXPAND(x1*x1, + x2*x2, + x3*x3);
   r = sqrt(r);
 
+  theta = g_inputParam[THETA]*CONST_PI/180.0;
+  phi   =   g_inputParam[PHI]*CONST_PI/180.0;
+  B0    = g_inputParam[BMAG];
+ 
+  us[BX1] = B0*sin(theta)*cos(phi);
+  us[BX2] = B0*sin(theta)*sin(phi);
+  us[BX3] = B0*cos(theta);
+  
   us[RHO] = n_ISM;
   us[VX1] = 0.0;
   us[VX2] = 0.0;
@@ -283,12 +291,17 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
   int   i, j, k, nv;
   double *x1, *x2, *x3;
   double  r, r0, cs;
-  double  Vwind , rho, vr;
+  double  Vwind , rho, vr, theta, phi, B0;
 
   x1 = grid[IDIR].xgc;
   x2 = grid[JDIR].xgc;
   x3 = grid[KDIR].xgc;
 
+  theta = g_inputParam[THETA]*CONST_PI/180.0;
+  phi   =   g_inputParam[PHI]*CONST_PI/180.0;
+  B0    = g_inputParam[BMAG];
+ 
+  
   Vwind = g_inputParam[V_WIND];
   rho   = g_inputParam[RHO_WIND];
   r0    = g_inputParam[R_WIND];
@@ -306,9 +319,15 @@ void UserDefBoundary (const Data *d, RBox * box, int side, Grid *grid)
          d->Vc[VX1][k][j][i] = Vwind*x1[i]/r;
          d->Vc[VX2][k][j][i] = Vwind*x2[j]/r;
          d->Vc[VX3][k][j][i] = Vwind*x3[k]/r;
+
          d->Vc[PRS][k][j][i] = cs*cs/g_gamma*pow(rho,g_gamma);
          d->flag[k][j][i]   |= FLAG_INTERNAL_BOUNDARY;
        }
+	   if (r <= 3*r0 && r > r0){
+	    d->Vc[BX1][k][j][i] = B0*(x3[k]/r+1)*2*x1[i]*x3[k]/r/r;
+         d->Vc[BX2][k][j][i] = B0*(x3[k]/r+1)*2*x2[j]*x3[k]/r/r;
+         d->Vc[BX3][k][j][i] = B0*(x3[k]/r+1)*(x3[k]*x3[k]-x1[i]*x1[i]-x2[j]*x2[j])/r/r;
+	   }
       #elif GEOMETRY == CYLINDRICAL
        r  = sqrt(x1[i]*x1[i] + x2[j]*x2[j]);
        if (r <= r0){

@@ -1,0 +1,16 @@
+#PBS -N SNR
+#PBS -l nodes=20:ppn=28
+#PBS -q big
+#PBS -V
+#PBS -S /bin/bash 
+### Set intel environment###
+source /opt/intel/compilers_and_libraries_2017.2.174/linux/bin/compilervars.sh intel64 
+source /opt/intel/mkl/bin/mklvars.sh intel64
+source /opt/intel/impi/2017.2.174/intel64/bin/mpivars.sh intel64
+
+
+cd $PBS_O_WORKDIR
+NP=`cat $PBS_NODEFILE | wc -l`
+
+mpirun -genv I_MPI_FABRIC tmi:shm -machinefile $PBS_NODEFILE -n $NP ./pluto
+
